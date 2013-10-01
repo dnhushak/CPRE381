@@ -1,0 +1,318 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/home/dnhushak/CPRE381/Lab-02/P3
+T_opt
+Z1 VIYMKd6MM78>cP1]@YS1>C0
+Z2 04 7 8 work addtest behavior 1
+Z3 =1--524465ce-bc074-21ac
+Z4 o-quiet -auto_acc_if_foreign -work work +acc
+Z5 n@_opt
+Z6 OL;O;6.5c;42
+Eaddtest
+Z7 w1380213735
+Z8 DPx17 __model_tech/ieee 14 std_logic_1164 0 22 GH1=`jDDBJ=`LM;:Ak`kf2
+32
+Z9 8/home/dnhushak/CPRE381/Lab-02/P3/addTest.vhd
+Z10 F/home/dnhushak/CPRE381/Lab-02/P3/addTest.vhd
+l0
+L5
+Z11 VCG;Wlc3aiGhL@HTJUTPcK0
+Z12 OL;C;6.5c;42
+Z13 o-work work
+Z14 tExplicit 1
+Z15 !s100 ^OinGQeocRdQ@0^VXcIZ`3
+Abehavior
+Z16 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 21 nbitfulladderdataflow 0 22 @e]zjjl`XR`HkBYAzSJ`I3
+Z17 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 13 nbitfulladder 0 22 nHST[g7K>n7M`@<NO1SYH2
+R8
+DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 7 addtest 0 22 CG;Wlc3aiGhL@HTJUTPcK0
+32
+Z18 Mx1 17 __model_tech/ieee 14 std_logic_1164
+l39
+L9
+Z19 Ve:G_d0bNPGzfbP1P2J9T=0
+R12
+R13
+R14
+Z20 !s100 aB0jU;I[I=YhG<:]2d4PR1
+Eaddtest2bit
+Z21 w1379619608
+Z22 DPx4 ieee 14 std_logic_1164 0 22 GH1=`jDDBJ=`LM;:Ak`kf2
+Z23 8/home/dnhushak/CPRE381/Lab-02/P3/addTest2bit.vhd
+Z24 F/home/dnhushak/CPRE381/Lab-02/P3/addTest2bit.vhd
+l0
+L5
+Z25 VVE4_AH;5OFiTbmF50Hz@n1
+R12
+32
+R13
+R14
+Z26 !s100 a@`8GVJJ59X?n?4f1;`Q80
+Abehavior
+R22
+Z27 DEx4 work 11 addtest2bit 0 22 VE4_AH;5OFiTbmF50Hz@n1
+l26
+L9
+Z28 V_RZ`L6kLzYKk=Uf_YR<=53
+R12
+32
+Z29 Mx1 4 ieee 14 std_logic_1164
+R13
+R14
+Z30 !s100 SAi[1aC]:?=OUfU8QnFAc3
+Eand2
+Z31 w1379618276
+R8
+32
+Z32 8/home/dnhushak/CPRE381/Lab-02/P3/and2.vhd
+Z33 F/home/dnhushak/CPRE381/Lab-02/P3/and2.vhd
+l0
+L21
+Z34 VfVL4Ze9kLmF^WI1lHIJ^a2
+R12
+R13
+R14
+Z35 !s100 ?nTgX59O`[<]j^L4E@N3<1
+Adataflow
+R8
+Z36 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 4 and2 0 22 fVL4Ze9kLmF^WI1lHIJ^a2
+32
+R18
+l30
+L29
+Z37 VLbzWnS]heH@[dZ36T_];E3
+R12
+R13
+R14
+Z38 !s100 2]QXgT@2`<[OgNlO=gZiS0
+Efulladder
+Z39 w1379619055
+R8
+32
+Z40 8/home/dnhushak/CPRE381/Lab-02/P3/fulladder.vhd
+Z41 F/home/dnhushak/CPRE381/Lab-02/P3/fulladder.vhd
+l0
+L5
+Z42 Vn0`;YQ[UnP=`o4Ihe]X_92
+R12
+R13
+R14
+Z43 !s100 V^]GF@Yh4aGA=cIfM4M_h3
+Astructure
+Z44 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 3 or3 0 22 >^<l>zgL0I7<1TBzPk>NQ3
+R36
+Z45 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 4 xor2 0 22 4<hnMi^zYM6eOWXYf:ikb2
+R8
+Z46 DEx37 /home/dnhushak/CPRE381/Lab-02/P3/work 9 fulladder 0 22 n0`;YQ[UnP=`o4Ihe]X_92
+32
+R18
+l41
+L15
+Z47 V[MdZ=0_=I`[Ma_HC7SPee0
+R12
+R13
+R14
+Z48 !s100 6hW5o:BoFiMa4;60PPSg_2
+Einv
+R31
+R22
+Z49 8/home/dnhushak/CPRE381/Lab-02/P3/inv.vhd
+Z50 F/home/dnhushak/CPRE381/Lab-02/P3/inv.vhd
+l0
+L21
+Z51 VkSo09h=RWQaSU4AA]H_Wh3
+R12
+32
+R13
+R14
+Z52 !s100 I=E9IQAB=_L[eRzf6_J`e1
+Adataflow
+R22
+Z53 DEx4 work 3 inv 0 22 kSo09h=RWQaSU4AA]H_Wh3
+l29
+L28
+Z54 V7o0al<=MRKSDRTMX_6dTN1
+R12
+32
+R29
+R13
+R14
+Z55 !s100 o3LAce^L_K;V0OBiFSgDA0
+Enand2
+Z56 w1380211765
+R22
+Z57 8/home/dnhushak/CPRE381/Lab-02/P3/nand2.vhd
+Z58 F/home/dnhushak/CPRE381/Lab-02/P3/nand2.vhd
+l0
+L21
+Z59 VeTZ<H]SKJA9EYe?bJHa4I1
+R12
+32
+R13
+R14
+Z60 !s100 Oh3ES6T>H@36S2:dDidzz0
+Adataflow
+R22
+Z61 DEx4 work 5 nand2 0 22 eTZ<H]SKJA9EYe?bJHa4I1
+l30
+L29
+Z62 V@Q84gS2`^8?=2kNzgooVA1
+R12
+32
+R29
+R13
+R14
+Z63 !s100 j7moL]@Qm4:?<;A0]ff@61
+Enbitfulladder
+Z64 w1380211849
+R8
+32
+Z65 8/home/dnhushak/CPRE381/Lab-02/P3/nbitfulladder.vhd
+Z66 F/home/dnhushak/CPRE381/Lab-02/P3/nbitfulladder.vhd
+l0
+L5
+Z67 VnHST[g7K>n7M`@<NO1SYH2
+R12
+R13
+R14
+Z68 !s100 TPgg2EDC0Mhz<n1n@V6[I0
+Astructure
+R46
+R8
+R17
+32
+R18
+l28
+L15
+Z69 VjS8TEk`1lP>jYOUbLInKB1
+R12
+R13
+R14
+Z70 !s100 J9TMS2<=7JEHReML4<A7[1
+Enbitfulladderdataflow
+Z71 w1380214214
+R8
+32
+Z72 8/home/dnhushak/CPRE381/Lab-02/P3/nbitfulladderdataflow.vhd
+Z73 F/home/dnhushak/CPRE381/Lab-02/P3/nbitfulladderdataflow.vhd
+l0
+L5
+Z74 V@e]zjjl`XR`HkBYAzSJ`I3
+R12
+R13
+R14
+Z75 !s100 zHYJoQ2SPcZ@P>gNC[7]80
+Astructure
+R8
+R16
+32
+R18
+l20
+L16
+Z76 VLjhKa21D7ePiiWj^c^m^m0
+R12
+R13
+R14
+Z77 !s100 dGW?GB_lQg5S^SS9=EE8A0
+Enbitmux2to1
+Z78 w1379621506
+R22
+Z79 8/home/dnhushak/CPRE381/Lab-02/P3/nbitmux2to1.vhd
+Z80 F/home/dnhushak/CPRE381/Lab-02/P3/nbitmux2to1.vhd
+l0
+L5
+Z81 Vl[^H1EXQFA6Xm?]A3a6:]0
+R12
+32
+R13
+R14
+Z82 !s100 ;l0n?`=nHkW:l[?>f6cMZ2
+Astructure
+R22
+Z83 DEx4 work 11 nbitmux2to1 0 22 l[^H1EXQFA6Xm?]A3a6:]0
+l40
+L15
+Z84 V]ZO0IhZl;e`5WlnnH?]cn2
+R12
+32
+R29
+R13
+R14
+Z85 !s100 oB9CQOZTQO9hWaM:L[m2i3
+Eor2
+Z86 w1379618282
+R22
+Z87 8/home/dnhushak/CPRE381/Lab-02/P3/or2.vhd
+Z88 F/home/dnhushak/CPRE381/Lab-02/P3/or2.vhd
+l0
+L21
+Z89 VQ5jj`QMaAZGS77OQ=E:SN3
+R12
+32
+R13
+R14
+Z90 !s100 GZnm45]@TOZN;V>CA[0Z12
+Adataflow
+R22
+Z91 DEx4 work 3 or2 0 22 Q5jj`QMaAZGS77OQ=E:SN3
+l30
+L29
+Z92 V6h9d6BaoaR`kMXR4UCT``3
+R12
+32
+R29
+R13
+R14
+Z93 !s100 GLP627^LGVOJ5LHjUXG]k3
+Eor3
+Z94 w1379618577
+R8
+32
+Z95 8/home/dnhushak/CPRE381/Lab-02/P3/or3.vhd
+Z96 F/home/dnhushak/CPRE381/Lab-02/P3/or3.vhd
+l0
+L4
+Z97 V>^<l>zgL0I7<1TBzPk>NQ3
+R12
+R13
+R14
+Z98 !s100 8?d_Xd11B6Sl[_DhhdHh_1
+Adataflow
+R8
+R44
+32
+R18
+l14
+L13
+Z99 VzbIgbGYX5l3HC]ojI;ZA=3
+R12
+R13
+R14
+Z100 !s100 _nX0o>e8WXNeJ]U>bBZ`D0
+Exor2
+Z101 w1379618536
+R8
+32
+Z102 8/home/dnhushak/CPRE381/Lab-02/P3/xor2.vhd
+Z103 F/home/dnhushak/CPRE381/Lab-02/P3/xor2.vhd
+l0
+L4
+Z104 V4<hnMi^zYM6eOWXYf:ikb2
+R12
+R13
+R14
+Z105 !s100 S7BzBTc;Y`IR3FMmz3H7H3
+Adataflow
+R8
+R45
+32
+R18
+l13
+L12
+Z106 VX3OzJB68@En2Z80HjahZC1
+R12
+R13
+R14
+Z107 !s100 YYRC=B471`N3fJNT3hm2K0

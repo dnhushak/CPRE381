@@ -1,0 +1,37 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/home/dnhushak/CPRE381/Lab-01
+T_opt
+Z1 VheD>gzaXl6MFJ[<S_eUJc0
+Z2 04 5 8 work adder behavior 1
+Z3 =1-001b2188f7d3-5228c240-39bed-29a2
+Z4 o-quiet -auto_acc_if_foreign -work work
+Z5 n@_opt
+Z6 OL;O;6.5c;42
+Eadder
+Z7 w1282148150
+Z8 DPx17 __model_tech/ieee 14 std_logic_1164 0 22 GH1=`jDDBJ=`LM;:Ak`kf2
+32
+Z9 8Adder.vhd
+Z10 FAdder.vhd
+l0
+L26
+Z11 V6]5^0^P@>5INYhc?E1J412
+Z12 OL;C;6.5c;42
+Z13 o-work work
+Z14 tExplicit 1
+Z15 !s100 ;TmZ4n>hokkzVI_7WHd`Q3
+Abehavior
+R8
+DEx34 /home/dnhushak/CPRE381/Lab-01/work 5 adder 0 22 6]5^0^P@>5INYhc?E1J412
+32
+Mx1 17 __model_tech/ieee 14 std_logic_1164
+l36
+L35
+Z16 VBc;4Jd6JD@:m1PC`jO]NJ1
+R12
+R13
+R14
+Z17 !s100 G3_gd55RnI:_aK:i<aQLh2

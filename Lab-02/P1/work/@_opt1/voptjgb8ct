@@ -1,0 +1,122 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/home/dnhushak/CPRE381/Lab-02/P1
+T_opt
+Z1 VBn633K801j^dXU5aneT5_1
+Z2 04 11 8 work onecomptest behavior 1
+Z3 =1-001b2188f639-52320613-a9805-10e9
+Z4 o-quiet -auto_acc_if_foreign -work work
+Z5 n@_opt
+Z6 OL;O;6.5c;42
+T_opt1
+Z7 V>CDn7l=LegQf46Yeb^GYa0
+R2
+Z8 =1-001b2188f639-52320bfa-5de8c-139d
+Z9 o-quiet -auto_acc_if_foreign -work work +acc
+Z10 n@_opt1
+R6
+Einv
+Z11 w1282148150
+Z12 DPx17 __model_tech/ieee 14 std_logic_1164 0 22 GH1=`jDDBJ=`LM;:Ak`kf2
+32
+Z13 8inv.vhd
+Z14 Finv.vhd
+l0
+L21
+Z15 VkSo09h=RWQaSU4AA]H_Wh3
+Z16 OL;C;6.5c;42
+Z17 o-work work
+Z18 tExplicit 1
+Z19 !s100 I=E9IQAB=_L[eRzf6_J`e1
+Adataflow
+R12
+Z20 DEx37 /home/dnhushak/CPRE381/Lab-02/P1/work 3 inv 0 22 kSo09h=RWQaSU4AA]H_Wh3
+32
+Z21 Mx1 17 __model_tech/ieee 14 std_logic_1164
+l29
+L28
+Z22 V7o0al<=MRKSDRTMX_6dTN1
+R16
+R17
+R18
+Z23 !s100 o3LAce^L_K;V0OBiFSgDA0
+Eonecomptest
+Z24 w1379011522
+R12
+32
+Z25 8onecomptest.vhd
+Z26 Fonecomptest.vhd
+l0
+L22
+Z27 V`7UYfg248Tee^FLMhYQ6?2
+R16
+R17
+R18
+Z28 !s100 f=DP^;dfiD4fih<TcSK_`2
+Abehavior
+Z29 DEx37 /home/dnhushak/CPRE381/Lab-02/P1/work 24 onescomplementerdataflow 0 22 ASMD?82KE]Y<33Y<NM3hH2
+Z30 DEx37 /home/dnhushak/CPRE381/Lab-02/P1/work 16 onescomplementer 0 22 ]d`>a@MA6AcHY:kzB;l[D2
+R12
+DEx37 /home/dnhushak/CPRE381/Lab-02/P1/work 11 onecomptest 0 22 `7UYfg248Tee^FLMhYQ6?2
+32
+R21
+l48
+L26
+Z31 VP?aC1X3VHM>STMQ32[ABa2
+R16
+R17
+R18
+Z32 !s100 :?B1o3?oDH^DGcM:j5Jkk0
+Eonescomplementer
+Z33 w1379010484
+R12
+32
+Z34 8onescomplementer.vhd
+Z35 Fonescomplementer.vhd
+l0
+L21
+Z36 V]d`>a@MA6AcHY:kzB;l[D2
+R16
+R17
+R18
+Z37 !s100 :K6dImOd6Qj0oaLeN9A9_3
+Astructure
+R20
+R12
+R30
+32
+R21
+l36
+L28
+Z38 VGPbHk=8la:dNf^F`O3[e<3
+R16
+R17
+R18
+Z39 !s100 AOILOH9`EY?mCe7Q1U=Zm0
+Eonescomplementerdataflow
+Z40 w1379011301
+R12
+32
+Z41 8onescomplementerdataflow.vhd
+Z42 Fonescomplementerdataflow.vhd
+l0
+L21
+Z43 VASMD?82KE]Y<33Y<NM3hH2
+R16
+R17
+R18
+Z44 !s100 Cmh7VN@3j@BARn[^g9YaV0
+Adataflow
+R12
+R29
+32
+R21
+l30
+L28
+Z45 V7W=h`z1:FioPB2?8KToNB1
+R16
+R17
+R18
+Z46 !s100 kz1blWmFF8j[g2@ggI;lZ0
