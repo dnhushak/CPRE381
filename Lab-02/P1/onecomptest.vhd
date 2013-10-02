@@ -1,20 +1,3 @@
--------------------------------------------------------------------------
--- Joseph Zambreno
--- Department of Electrical and Computer Engineering
--- Iowa State University
--------------------------------------------------------------------------
-
-
--- tb_and2.vhd
--------------------------------------------------------------------------
--- DESCRIPTION: This file contains a simple VHDL testbench for the
--- 2-input AND gate.
---
---
--- NOTES:
--- 8/31/08 by JAZ::Design created.
--------------------------------------------------------------------------
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 
@@ -54,10 +37,9 @@ DUT: onescomplementer
 DUT2: onescomplementerdataflow
   port map( i_A  => s_AVector,
             o_F  => s_DataVector);
-
-  -- Remember, a process executes sequentially
-  -- and then if not told to 'wait' loops back
-  -- around
+			
+			
+			
   process
   begin
 	
