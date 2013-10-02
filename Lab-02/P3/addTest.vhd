@@ -54,13 +54,17 @@ DUT2: nbitfulladderdataflow
            
   
   process
+ variable err : integer :=0;
   begin
-    
+  
     -- Initialize Signals--
     s_C <= '0';
     for I in 0 to BITS - 1 loop
       s_X(I) <= '0';
       s_Y(I) <= '0';
+	  if ((s_O /= s_O2) or (s_Co /= s_Co2)) then
+		err := err +1;
+		end if;
     end loop;
     
     
@@ -70,6 +74,9 @@ DUT2: nbitfulladderdataflow
       wait for 10 ns;
       s_Y(I) <= '1';
       wait for 10 ns;
+	  if ((s_O /= s_O2) or (s_Co /= s_Co2)) then
+		err := err +1;
+		end if;
     end loop;
     
     -- Reinitialize X and Y, set C = 1 --
@@ -77,6 +84,9 @@ DUT2: nbitfulladderdataflow
     for I in 0 to BITS - 1 loop
       s_X(I) <= '0';
       s_Y(I) <= '0';
+	  if ((s_O /= s_O2) or (s_Co /= s_Co2)) then
+		err := err +1;
+		end if;
     end loop;
     
     -- Loop through X and Y values @ Control = 1 --    
@@ -85,7 +95,14 @@ DUT2: nbitfulladderdataflow
       wait for 10 ns;
       s_Y(I) <= '1';
       wait for 10 ns;
+	  if ((s_O /= s_O2) or (s_Co /= s_Co2)) then
+		err := err +1;
+		end if;
     end loop;
+	
+	if err = 0 then
+		report "Outputs match";
+	end if;
   
 
 

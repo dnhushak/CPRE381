@@ -48,6 +48,7 @@ DUT: addsub
       s_Y(I) <= '0';
     end loop;
     
+	  wait for 10 ns;
     
     -- Loop through X and Y values @ Control = 0 --
     for I in 0 to BITS - 1 loop
@@ -63,6 +64,8 @@ DUT: addsub
       s_X(I) <= '0';
       s_Y(I) <= '0';
     end loop;
+	
+      wait for 10 ns;
     
     -- Loop through X and Y values @ Control = 1 --    
     for I in 0 to BITS - 1 loop
