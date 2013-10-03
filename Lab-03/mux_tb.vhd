@@ -11,7 +11,7 @@ architecture behavior of mux_tb is
   
   component n32bitmux32to1 
 	  generic(N : integer := 32);
-	  port(i_C      : in std_logic_vector(4 downto 0);
+	  port(i_C  : in std_logic_vector(4 downto 0);
 	       i_X 	: in array32_bit(N-1 downto 0);
 	       o_M 	: out std_logic_vector(N-1 downto 0));
   end component;

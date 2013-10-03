@@ -15,9 +15,15 @@ component decoder5to32
 			o_R : out std_logic_vector(31 downto 0));
 end component;
 
+component nbitdecoder
+	generic(INBITS : integer := 5);
+	port(	i_A : in std_logic_vector(INBITS downto 0);
+			o_R : out std_logic_vector(2 ** INBITS downto 0));
+end component;
+
 
 signal s_Encoded : std_logic_vector(4 downto 0);
-signal s_Decoded : std_logic_vector(31 downto 0);
+signal s_Decoded, s_Decodedn : std_logic_vector(31 downto 0);
 
 begin
 
@@ -25,7 +31,10 @@ DUT: decoder5to32
   port map( i_A  => s_Encoded,
             o_R  => s_Decoded);
             
-			
+DUT2: nbitdecoder
+  port map( i_A  => s_Encoded,
+            o_R  => s_Decodedn);
+            
 			
 			
   process
