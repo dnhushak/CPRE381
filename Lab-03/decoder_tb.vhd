@@ -32,8 +32,8 @@ DUT: decoder5to32
   begin
 	--Initialize
 	for I in 0 to 4 loop
-      s_Encoded(I) <= '0';
-    end loop;
+     	 s_Encoded(I) <= '0';
+    	end loop;
     wait for 10 ns;
     
 	--Increment the Encoded signal by 1 every 10 ns
