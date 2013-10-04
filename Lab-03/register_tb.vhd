@@ -2,17 +2,17 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
-entity nbitregister_tb is
+entity register_Nbit_tb is
   generic(gCLK_HPER   : time := 50 ns; BITS : integer := 8);
-end nbitregister_tb;
+end register_Nbit_tb;
 
-architecture behavior of nbitregister_tb is
+architecture behavior of register_Nbit_tb is
   
   -- Calculate the clock period as twice the half-period
   constant cCLK_PER  : time := gCLK_HPER * 2;
 
 
-  component nbitregister
+  component register_Nbit
   generic(N : integer := BITS);
   port(i_CLK        : in std_logic;     -- Clock input
        i_RST        : in std_logic;     -- Reset input
@@ -21,13 +21,13 @@ architecture behavior of nbitregister_tb is
        o_Q          : out std_logic_vector(N-1 downto 0));   -- Data value output
   end component;
 
-  -- Temporary signals to connect to the nbitregister component.
+  -- Temporary signals to connect to the register_Nbit component.
   signal s_CLK, s_RST, s_WE  : std_logic;
   signal s_D, s_Q : std_logic_vector(BITS-1 downto 0);
 
 begin
 
-  DUT: nbitregister 
+  DUT: register_Nbit 
   port map(i_CLK => s_CLK, 
            i_RST => s_RST,
            i_WE  => s_WE,

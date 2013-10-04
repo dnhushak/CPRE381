@@ -5,7 +5,7 @@ use IEEE.std_logic_1164.all;
 
 package utils is
 
-type array32_bit is array(natural range <>) of std_logic_vector(31 downto 0);
+type array_Nbit is array(natural range <>, natural range<>) of std_logic;
 function to_std_logic(L: BOOLEAN) return std_ulogic;
 
 end utils;

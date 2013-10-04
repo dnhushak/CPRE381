@@ -4,9 +4,9 @@ use IEEE.std_logic_1164.all;
 
 entity mux2to1 is
 
-  port(i_C              : in std_logic;
+  port(i_C      : in std_logic;
        i_X 		: in std_logic;
-       i_Y              : in std_logic;
+       i_Y      : in std_logic;
        o_M 		: out std_logic);
 
 end mux2to1;
