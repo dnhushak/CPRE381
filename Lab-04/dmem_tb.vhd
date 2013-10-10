@@ -81,6 +81,7 @@ begin
 	   	
 	   	--Disable write
 	   	s_WE <= '0';
+	   	wait for 2 * gCLK_HPER;
 	   	
 	   	--Set next read address;
 	   	s_addr <= std_logic_vector( unsigned(s_addr) - 99);
