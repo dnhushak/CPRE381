@@ -1,3 +1,6 @@
+.library_mapping.xml
+.project
+.settings
 typer
 *~
 *.do
