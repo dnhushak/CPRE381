@@ -81,6 +81,6 @@ begin
 	OFXOR : xor2
 		port map(i_A => s_Carry(N - 1),
 			     i_B => s_Carry(N - 2),
-			     o_F => Orout);
+			     o_F => o_OF);
 
 end structure;
