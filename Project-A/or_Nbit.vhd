@@ -15,9 +15,9 @@ signal s_or : std_logic_vector (N-3 downto 0 );
 begin
 
 	s_or(0) <= i_A (0) or i_A (1);
-  OR_GEN: for I in 1 to N-1 generate
-  	s_or(I) <= s_or(I-1) or i_A(I +1);
+  OR_GEN: for I in 1 to N-3 generate
+  	s_or(I) <= s_or(I-1) or i_A(I + 1);
   	end generate OR_GEN;
-  	o_F <= s_or(N-1);
+  	o_F <= s_or(N-3);
   
 end dataflow;

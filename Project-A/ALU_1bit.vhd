@@ -10,7 +10,7 @@ entity ALU_1bit is
 		 i_Binv          : in std_logic; --Invert B
 		 i_C             : in std_logic; --Carry In
 		 i_L             : in std_logic; --Input "Less"
-		 i_Op            : in std_logic_vector(1 downto 0); --Operation
+		 i_Op            : in std_logic_vector(2 downto 0); --Operation
 		 o_R             : out std_logic; --Output Result
 		 o_C             : out std_logic; --Carry Out
 		 o_S             : out std_logic); -- Set Out       
@@ -26,13 +26,13 @@ entity ALU_1bit is
 					o_C  : out std_logic);
 			end component;
 
-			component mux_Nbit_Min
-				generic(N : integer;
+			component mux_1bit_Min
+				generic(
 					M : integer;
 					A : integer);
 				port(i_C : in std_logic_vector(A - 1 downto 0);
-					i_X  : in array_Nbit(M - 1 downto 0, N - 1 downto 0);
-					o_M  : out std_logic_vector(N - 1 downto 0));
+					i_X  : in std_logic_vector(M - 1 downto 0);
+					o_M  : out std_logic);
 			end component;
 
 			component and2
@@ -46,6 +46,12 @@ entity ALU_1bit is
 					i_B  : in std_logic;
 					o_F  : out std_logic);
 			end component;
+			
+			component xor2
+				port(i_A : in std_logic;
+					i_B  : in std_logic;
+					o_F  : out std_logic);
+			end component;
 
 			component inv
 				port(i_A : in std_logic;
@@ -53,7 +59,7 @@ entity ALU_1bit is
 			end component;
 
 			-- Signals
-			signal Ainv, Binv, Amux, Bmux, Andout, Orout, Addout : std_logic := '0';
+			signal Ainv, Binv, Amux, Bmux, Andout, Orout, Xorout, Addout : std_logic := '0';
 
 		 begin
 			---------------------------------------------------------
@@ -64,30 +70,29 @@ entity ALU_1bit is
 				port map(i_A => i_A,
 					o_F => Ainv);
 
-			MUXA : mux_Nbit_Min
-				generic map(N => 1,
-					M => 2,
+			MUXA : mux_1bit_Min
+				generic map(M => 2,
 					A => 1)
 				port map(i_C(0) => i_Ainv,
-					i_X(0)(0) => i_A,
-					i_X(0)(1) => Ainv,
-					o_M(0) => Amux);
+					i_X(0) => i_A,
+					i_X(1) => Ainv,
+					o_M => Amux);
 
 			INVB : inv
 				port map(i_A => i_B,
 					o_F => Binv);
 
-			MUXB : mux_Nbit_Min
-				generic map(N => 1,
+			MUXB : mux_1bit_Min
+				generic map(
 					M => 2,
 					A => 1)
 				port map(i_C(0) => i_Binv,
-					i_X(0)(0) => i_B,
-					i_X(1)(0) => Binv,
-					o_M(0) => Bmux);
+					i_X(0) => i_B,
+					i_X(1) => Binv,
+					o_M => Bmux);
 
 			---------------------------------------------------------
-			--LEVEL 2: AND, OR, and 1-bit ADDER 				   --
+			--LEVEL 2: AND, OR, XOR, and 1-bit ADDER 			   --
 			---------------------------------------------------------
 
 			ANDAB : and2
@@ -99,6 +104,11 @@ entity ALU_1bit is
 				port map(i_A => Amux,
 					i_B => Bmux,
 					o_F => Orout);
+					
+			XORAB : xor2
+				port map(i_A => Amux,
+					i_B => Bmux,
+					o_F => Xorout);
 
 			ADDAB : fulladder_1bit
 				port map(i_A => Amux,
@@ -112,15 +122,16 @@ entity ALU_1bit is
 			--LEVEL 3: Control Muxing							   --
 			---------------------------------------------------------
 
-			CONTROLMUX : mux_Nbit_Min
-				generic map(N => 1,
-					M => 4,
-					A => 2)
+			CONTROLMUX : mux_1bit_Min
+				generic map(M => 8,
+					A => 3)
 				port map(i_C => i_Op,
-					i_X(0)(0) => Andout,
-					i_X(1)(0) => Orout,
-					i_X(2)(0) => Addout,
-					i_X(3)(0) => i_L,
-					o_M(0) => o_R);
+					i_X(0) => Andout,
+					i_X(1) => Orout,
+					i_X(2) => Addout,
+					i_X(3) => i_L,
+					i_X(4) => Xorout,
+					i_X(7 downto 5) => "000",
+					o_M => o_R);
 
 		 end structure;

@@ -10,7 +10,7 @@ entity ALU_Nbit is
 		 i_Ainv : in  std_logic;        --Invert A
 		 i_Binv : in  std_logic;        --Invert B
 		 i_C    : in  std_logic;        --Carry In
-		 i_Op   : in  std_logic_vector(1 downto 0); --Operation
+		 i_Op   : in  std_logic_vector(2 downto 0); --Operation
 		 o_R    : out std_logic_vector(N - 1 downto 0); --Output Result
 		 o_OF   : out std_logic;       --Overflow Output
 		 o_Zero	: out std_logic);		--Zero Output
@@ -25,7 +25,7 @@ architecture structure of ALU_Nbit is
 			 i_Binv : in  std_logic;    --Invert B
 			 i_C    : in  std_logic;    --Carry In
 			 i_L    : in  std_logic;    --Input "Less"
-			 i_Op   : in  std_logic_vector(1 downto 0); --Operation
+			 i_Op   : in  std_logic_vector(2 downto 0); --Operation
 			 o_R    : out std_logic;    --Output Result
 			 o_C    : out std_logic;    --Carry Out
 			 o_S    : out std_logic);   --Set Output

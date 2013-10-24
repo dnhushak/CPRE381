@@ -6,7 +6,7 @@ use work.utils.all;
 
 entity mux_tb is
 	--N is I/O width, M is number of inputs (power of 2), A is address size (2^A must be = M)
-	generic(N : integer := 16; M : integer := 32; A : integer := 5);
+	generic(N : integer := 2; M : integer := 32; A : integer := 5);
 end mux_tb;
 
 architecture behavior of mux_tb is
