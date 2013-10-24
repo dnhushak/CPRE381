@@ -58,7 +58,7 @@ begin
 			     o_S    => s_Set(0));
 
 	---------------------------------------------------------
-	--MSB: 1 Bit ALU's									   --
+	--MSB's: 1 Bit ALU's								   --
 	---------------------------------------------------------
 	MSB : for I in 1 to N - 1 generate
 		gen_MSB : ALU_1bit
@@ -72,7 +72,7 @@ begin
 				     o_R    => o_R(I),
 				     o_C    => s_Carry(I),
 				     o_S    => s_Set(I));
-	end generate MSB
+	end generate MSB;
 
 	---------------------------------------------------------
 	--LEVEL 2: XOR of Cin(31) and Cout(31) for overflow    --
