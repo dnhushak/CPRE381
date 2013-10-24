@@ -13,7 +13,7 @@ entity ALU_1bit is
 		 i_Op            : in std_logic_vector(1 downto 0); --Operation
 		 o_R             : out std_logic; --Output Result
 		 o_C             : out std_logic; --Carry Out
-		 o_S             : out std_logic; -- Set Out);       
+		 o_S             : out std_logic); -- Set Out       
 
 		 end ALU_1bit ;
 
@@ -107,7 +107,7 @@ entity ALU_1bit is
 					o_S => Addout,
 					o_C => o_C);
 			
-			Addout <= o_S;
+			o_S <= Addout;
 			---------------------------------------------------------
 			--LEVEL 3: Control Muxing							   --
 			---------------------------------------------------------
