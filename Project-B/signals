@@ -1,0 +1,42 @@
+lw
+sw
+add
+sub
+and
+slt
+or
+beq
+j
+
+
+signals:
+
+instruction - 32
+regdst - 1
+jump - 1
+branch - 1
+memread - 1
+memtoreg - 1
+aluop - 2
+memwrite - 1
+alusrc - 1
+regwrite - 1
+zero - 1 
+beq - 1
+alucontrol - 4
+read1 - 32
+read2 - 32
+aluresult -32
+memorydataread - 32
+registerwrite - 32
+
+PC management: 32 bits
+PC
+PCUpdate
+branchinstruction
+branchaddressx4
+pc+4
+jumpaddress
+nojumpaddress
+branchaddress
+
