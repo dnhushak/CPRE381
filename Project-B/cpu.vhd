@@ -26,7 +26,7 @@ entity cpu is
 		 clock      : in  m32_1bit);    -- System clock
 end cpu;
 
--- This architecture of CPU must be dominantly structural, with no bahavior 
+-- This architecture of CPU must be dominantly structural, with no behavior 
 -- modeling, and only data flow statements to copy/split/merge signals or 
 -- with a single level of basic logic gates.
 architecture structure of cpu is
@@ -123,7 +123,6 @@ architecture structure of cpu is
 	signal regdst, jump, branch, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq : m32_1bit;
 	signal aluop                                                                          : m32_2bits;
 	signal s_alucontrol                                                                   : m32_4bits;
-	signal opcode                                                                         : m32_6bits;
 
 	--Data
 	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, alumux : m32_word;
@@ -133,6 +132,8 @@ architecture structure of cpu is
 	signal CLK : m32_logic;
 begin
 
+
+	CLK <= clock;
 	-----------------------------------------------------------
 	--Instruction I/O
 	-----------------------------------------------------------
