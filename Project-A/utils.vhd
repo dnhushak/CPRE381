@@ -1,8 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
-
-
 package utils is
 
 type array_Nbit is array(natural range <>, natural range<>) of std_logic;
