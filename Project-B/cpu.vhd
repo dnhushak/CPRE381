@@ -143,7 +143,13 @@ begin
 	-----------------------------------------------------------
 	--Register I/O
 	-----------------------------------------------------------
-	WRITESWITCHER : mux2to1 generic map(M => 5) port map(sel => regdst, input0 => instruction(20 downto 16), input1 => instruction(15 downto 11), output => writemux);
+	WRITESWITCHER : mux2to1 
+		generic map(M => 5) 
+		port map(sel => regdst, 
+		input0 => instruction(20 downto 16), 
+		input1 => instruction(15 downto 11), 
+		output => writemux);
+		
 	REGISTERS : regfile port map(src1   => instruction(25 downto 21),
 			                     src2   => instruction(20 downto 16),
 			                     dst    => writemux,
@@ -164,12 +170,13 @@ begin
 			     result   => aluresult,
 			     zero     => zero);
 
+
 	ALUSWITCHER : mux2to1
 		generic map(M => 32)
 		port map(sel    => alusrc,
 			     input0 => read2,
 			     input1 => extended,
-			     output => writemux);
+			     output => alumux);
 
 	EXTENSION : extender_Nbit_Mbit
 		generic map(N => 16, M => 32)
@@ -228,7 +235,7 @@ begin
 			     result => PCPlus4);
 
 	BRANCHSHIFTER : barrelshift
-		generic map(N => 32)
+		generic map(N => 31)
 		port map(i_A   => extended,
 			     i_S   => "00010",
 			     i_FS  => '0',
@@ -255,7 +262,7 @@ begin
 	jumpinstruction <= "000000" & instruction(25 downto 0);
 
 	INSTRUCTIONSHIFTER : barrelshift
-		generic map(N => 32)
+		generic map(N => 31)
 		port map(i_A   => jumpinstruction,
 			     i_S   => "00010",
 			     i_FS  => '0',
