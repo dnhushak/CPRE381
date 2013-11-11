@@ -131,25 +131,31 @@ architecture structure of cpu is
 	--Clock
 	signal CLK : m32_logic;
 begin
-
-
 	CLK <= clock;
 	-----------------------------------------------------------
 	--Instruction I/O
 	-----------------------------------------------------------
+	PCREG : reg
+		generic map(M => 32)            -- Size of the register
+		port map(D     => PCUpdate,     -- Data input
+			     Q     => PC,           -- Data output
+			     WE    => '1',          -- Write enableenable
+			     reset => reset,        -- The clock signal
+			     clock => clock);       -- The reset signal
+
 	imem_addr   <= PC;
 	instruction <= inst;
 
 	-----------------------------------------------------------
 	--Register I/O
 	-----------------------------------------------------------
-	WRITESWITCHER : mux2to1 
-		generic map(M => 5) 
-		port map(sel => regdst, 
-		input0 => instruction(20 downto 16), 
-		input1 => instruction(15 downto 11), 
-		output => writemux);
-		
+	WRITESWITCHER : mux2to1
+		generic map(M => 5)
+		port map(sel    => regdst,
+			     input0 => instruction(20 downto 16),
+			     input1 => instruction(15 downto 11),
+			     output => writemux);
+
 	REGISTERS : regfile port map(src1   => instruction(25 downto 21),
 			                     src2   => instruction(20 downto 16),
 			                     dst    => writemux,
@@ -169,7 +175,6 @@ begin
 			     alu_code => s_alucontrol,
 			     result   => aluresult,
 			     zero     => zero);
-
 
 	ALUSWITCHER : mux2to1
 		generic map(M => 32)
