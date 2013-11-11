@@ -1,0 +1,58 @@
+DEPTH=1024; 	% Memory depth and width are required 
+		% DEPTH is the number of addresses 
+WIDTH = 32; 	% WIDTH is the number of bits of data per word
+		% DEPTH and WIDTH should be entered as decimal numbers
+
+ADDRESS_RADIX = DEC; 	% Address and value radixes are required
+DATA_RADIX = BIN; 	% Enter BIN, DEC, HEX, OCT, or UNS; unless
+			% otherwise specified, radixes = HEX
+
+-- Specify values for addresses, which can be single address or range
+-- SOME THINGS TO CONSIDER
+-- 1) This memory is word-addressable, versus the MIPS conceptual byte-addressable memory.
+--    This means that address 1 corresponds to word 1, address 2 corresponds to word 2, etc.
+--    Since MIPS will be generating byte addresses, you will have to create some (very simple)
+--    logic in your VHDL wrapper to deal with byte/word offsets. 
+-- 2) The "single address" notation seems to be least likely to cause confusion so that is what
+--    I recommend. 
+-- 3) The values need to be in 32-bit hex form (i.e. don't use F when you really mean 0000000F).
+
+-- Sample C code:
+--   if (a != b) c = a + b;
+-- Assume a @ 0x0000($zero), b @ 0x0004($zero), c @ 0x0008($zero0
+-- Assembly code:
+-- 0    lw   $t0, 0($zero)
+-- 1    lw   $t1, 4($zero)
+-- 2    beq  $t0, $t1, +2
+-- 3    add  $t0, $t0, $t1
+-- 4    sw   $t0, 8($zero)
+-- 5	slt  $t3, $t0, $t1
+-- 6	slt  $t4, $t1, $t0
+-- 7	sub  $t5, $t0, $t1
+-- 8	or   $t6, $t5, $t1
+-- 9	and  $t7, $t6, $t1
+-- 10   lw   $t0, 8($zero)
+-- 11	beq  $t7, $t1, -11
+-- 12	j	 0
+--      noop
+CONTENT
+BEGIN
+-- Instruction formats
+--R ======-----=====-----=====------
+--I ======-----=====----------------
+--J ======--------------------------
+0 : 10001100000010000000000000000000;
+1 : 10001100000010010000000000000100;
+2 : 00010001000010010000000000000010;
+3 : 00000001000010010100000000100000;
+4 : 10101100000010000000000000001000;
+5 : 00000001000010010101100000101010;
+6 : 00000001001010000110000000101010;
+7 : 00000001000010010110100000100010;
+8 : 00000001101010010111000000100101;
+9 : 00000001110010010111100000100100;
+10 : 10001100000010000000000000001000;
+11 : 00010001111010011111111111110101;
+12 : 00001000000000000000000000000000;
+[13..63] : 00000000; 			
+END;

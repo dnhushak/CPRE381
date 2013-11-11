@@ -41,16 +41,16 @@ architecture behavior of tb_cpu is
 	end component;
 
 	-- The signals connected to CPU and memories
-	signal imem_addr  : m32_word;       -- Instruction memory address
-	signal inst       : m32_word;       -- Instruction
-	signal dmem_addr  : m32_word;       -- Data memory address
-	signal dmem_read  : m32_1bit;       -- Data memory read?
-	signal dmem_write : m32_1bit;       -- Data memory write?
-	signal dmem_wmask : m32_4bits;      -- Data memory write mask
-	signal dmem_rdata : m32_word;       -- Data memory read data
-	signal dmem_wdata : m32_word;       -- Data memory write data
-	signal reset      : m32_1bit;       -- Reset signal
-	signal clock      : m32_1bit;       -- System clock
+	signal imem_addr  : m32_word  := (others => '0'); -- Instruction memory address
+	signal inst       : m32_word  := (others => '0'); -- Instruction
+	signal dmem_addr  : m32_word  := (others => '0'); -- Data memory address
+	signal dmem_read  : m32_1bit  := '0'; -- Data memory read?
+	signal dmem_write : m32_1bit  := '0'; -- Data memory write?
+	signal dmem_wmask : m32_4bits := (others => '0'); -- Data memory write mask
+	signal dmem_rdata : m32_word  := (others => '0'); -- Data memory read data
+	signal dmem_wdata : m32_word  := (others => '0'); -- Data memory write data
+	signal reset      : m32_1bit  := '0'; -- Reset signal
+	signal clock      : m32_1bit  := '0'; -- System clock
 
 begin
 	-- The CPU
@@ -69,18 +69,18 @@ begin
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "samples/imem.txt")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/imem.mif")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
 			     x"00000000",
 			     '0',
-			     inst );
+			     inst);
 
 	-- The data memory. Note that the write mask is hard wired to 1111, and
 	-- both data and q are connected to dmem_data
 	DATA_MEM : mem
-		generic map(mif_filename => "samples/dmem.txt")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/dmem.mif")
 		port map(dmem_addr(9 downto 2),
 			     "1111",
 			     clock,
@@ -118,9 +118,10 @@ begin
 		reset <= '1';
 		wait for CCT;
 		reset <= '0';
+		wait for CCT;
 
 		-- Run for five clock cycles
-		wait for 5 * CCT;
+		wait for 15 * CCT;
 
 		-- Force the simulation to stop
 		assert false report "Simulation ends" severity failure;
