@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 
-entity nbitfulladder is
+entity fulladder_Nbit is
   generic(N : integer := 2);
   port(i_A              : in std_logic_vector(N-1 downto 0);
        i_B 		: in std_logic_vector(N-1 downto 0);
@@ -10,9 +10,9 @@ entity nbitfulladder is
        o_S 		: out std_logic_vector(N-1 downto 0);
        o_C		: out std_logic);
 
-end nbitfulladder;
+end fulladder_Nbit;
 
-architecture structure of nbitfulladder is
+architecture structure of fulladder_Nbit is
   
   component fulladder
     port(i_A             : in std_logic;
