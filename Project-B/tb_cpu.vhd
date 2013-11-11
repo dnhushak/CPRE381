@@ -55,34 +55,34 @@ architecture behavior of tb_cpu is
 begin
 	-- The CPU
 	CPU1 : cpu
-		port map(imem_addr,
-			     inst,
-			     dmem_addr,
-			     dmem_read,
-			     dmem_write,
-			     dmem_wmask,
-			     dmem_rdata,
-			     dmem_wdata,
-			     reset,
-			     clock);
+		port map(imem_addr  => imem_addr,
+			     inst       => inst,
+			     dmem_addr  => dmem_addr,
+			     dmem_read  => dmem_read,
+			     dmem_write => dmem_write,
+			     dmem_wmask => dmem_wmask,
+			     dmem_rdata => dmem_rdata,
+			     dmem_wdata => dmem_wdata,
+			     reset      => reset,
+			     clock      => clock);
 
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "C:\Users\Robert\Documents\CPRE 381\Labs\Project B Darren\samples\imem.txt")
+		generic map(mif_filename => "samples/imem.txt")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
 			     x"00000000",
 			     '0',
-			     inst);
+			     inst );
 
 	-- The data memory. Note that the write mask is hard wired to 1111, and
 	-- both data and q are connected to dmem_data
 	DATA_MEM : mem
-		generic map(mif_filename => "C:\Users\Robert\Documents\CPRE 381\Labs\Project B Darren\samples\dmem.txt")
+		generic map(mif_filename => "samples/dmem.txt")
 		port map(dmem_addr(9 downto 2),
-			     dmem_wmask,
+			     "1111",
 			     clock,
 			     dmem_wdata,
 			     dmem_write,
