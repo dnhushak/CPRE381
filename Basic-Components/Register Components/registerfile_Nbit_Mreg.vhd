@@ -57,9 +57,9 @@ architecture structure of registerfile_Nbit_Mreg is
 	--Signals
 
 	--Register Outputs
-	signal s_Reg : array_Nbit(M - 1 downto 0, N - 1 downto 0);
-	type singleRegOut is array (integer range <>) of std_logic_vector(N - 1 downto 0);
-	signal s_RegSingle : singleRegOut(M - 1 downto 0);
+	signal s_RegOut : array_Nbit(M - 1 downto 0, N - 1 downto 0);
+--	type singleRegOut is array (integer range <>) of std_logic_vector(N - 1 downto 0);
+--	signal s_RegOutSingle : singleRegOut(M - 1 downto 0);
 
 	--Decoded Write Address
 	signal s_Wa : std_logic_vector(M - 1 downto 0);
@@ -73,11 +73,11 @@ begin
 	------------------------------------------------------------------------
 	g_Registers : for I in 0 to M - 1 generate
 		Registers : register_Nbit
-			port map(c_SLK => c_SLK,
-				     i_RST => i_RST(I),
-				     i_WE  => s_WE(I),
-				     i_A   => i_A,
-				     o_D   => s_RegSingle(I));
+			port map(c_SLK               => c_SLK,
+				     i_RST               => i_RST(I),
+				     i_WE                => s_WE(I),
+				     i_A                 => i_A,
+				     o_D(N - 1 downto 0) => s_RegOut(I, N - 1));
 	end generate g_Registers;
 
 	------------------------------------------------------------------------
@@ -85,11 +85,11 @@ begin
 	--the register output has to go through this intermediary RegSingle 
 	-- signal because of VHDL's shortcomings in type matching
 	------------------------------------------------------------------------
-	gen_connectregouts : for I in 0 to M - 1 generate
-		gen_connectregbits : for J in 0 to N - 1 generate
-			s_Reg(I, J) <= s_RegSingle(I)(J);
-		end generate gen_connectregbits;
-	end generate gen_connectregouts;
+--	gen_connectregouts : for I in 0 to M - 1 generate
+--		gen_connectregbits : for J in 0 to N - 1 generate
+--			s_RegOut(I, J) <= s_RegOutSingle(I)(J);
+--		end generate gen_connectregbits;
+--	end generate gen_connectregouts;
 
 	------------------------------------------------------------------------
 	--Ands for global write enable
@@ -106,7 +106,7 @@ begin
 	------------------------------------------------------------------------
 	readmux1 : mux_Nbit_Min
 		port map(c_S => i_R1a,
-			     i_A => s_Reg,
+			     i_A => s_RegOut,
 			     o_D => o_D1o);
 
 	------------------------------------------------------------------------
@@ -114,7 +114,7 @@ begin
 	------------------------------------------------------------------------
 	readmux2 : mux_Nbit_Min
 		port map(c_S => i_R2a,
-			     i_A => s_Reg,
+			     i_A => s_RegOut,
 			     o_D => o_D2o);
 	------------------------------------------------------------------------
 	--Write address decoder   
