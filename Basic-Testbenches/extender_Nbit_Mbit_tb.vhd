@@ -2,16 +2,16 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity extension_tb is
-end extension_tb;
+entity extencer_Nbit_Mbit_tb is
+end extencer_Nbit_Mbit_tb;
 
-architecture behavior of extension_tb is
+architecture behavior of extencer_Nbit_Mbit_tb is
 	component extender_Nbit_Mbit
 		generic(N : integer;
 			    M : integer);
-		port(i_C : in  std_logic;       --Control Input (0 is zero exnension, 1 is sign extension)
-			 i_N : in  std_logic_vector(N - 1 downto 0); --N-bit Input
-			 o_W : out std_logic_vector(M - 1 downto 0)); --Full Word Output
+		port(c_Ext : in  std_logic;       --Control Input (0 is zero exnension, 1 is sign extension)
+			 i_A : in  std_logic_vector(N - 1 downto 0); --N-bit Input
+			 o_D : out std_logic_vector(M - 1 downto 0)); --Full Word Output
 	end component;
 
 	signal s_byte : std_logic_vector(7 downto 0);
@@ -24,15 +24,15 @@ architecture behavior of extension_tb is
 begin
 	HALFWORD : extender_Nbit_Mbit
 		generic map(N => 16, M => 32)
-		port map(i_C => s_c,
-			     i_N => s_half,
-			     o_W => s_halfExtended);
+		port map(c_Ext => s_c,
+			     i_A => s_half,
+			     o_D => s_halfExtended);
 
 	BYTE : extender_Nbit_Mbit
 		generic map(N => 8, M => 32)
-		port map(i_C => s_c,
-			     i_N => s_byte,
-			     o_W => s_byteExtended);
+		port map(c_Ext => s_c,
+			     i_A => s_byte,
+			     o_D => s_byteExtended);
 
 	-- Testbench process  
 	P_TB : process
