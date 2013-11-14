@@ -131,7 +131,7 @@ begin
 			     i_A(2)          => s_Addout,
 			     i_A(3)          => i_L,
 			     i_A(4)          => s_Xorout,
-			     i_A(7 downto 5) => "000",
+			     i_A(7 downto 5) => '0',
 			     o_D             => o_D);
 
 end structure;
