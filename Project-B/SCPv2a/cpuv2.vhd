@@ -1,11 +1,18 @@
 
 --Need to add instructions:
 --addi
+	--Changing of control unit to output 1 for alu_src on the correct function code of addi
 --bne
+	--Muxing around the branch logic, need to make the branch control 2 bits
 --slti
+	--Changing of control unit to output 1 for alu_src on the correct function code of addi
 --sll
+	--Edit ALU to have magic shifter (sll, srl, and sla) in it, edit control and alu control to output correct opcode to select that
+	--Also have to have mux at the input of ALU in A for shift amount
 --jal
+	--standard jump but also need to write back to the $ra register from the PC + 4 signal
 --jr
+	--standard jump, but from a register
 
 library IEEE;
 use IEEE.std_logic_1164.all;
