@@ -30,7 +30,7 @@ architecture rom of controlv2 is
 
 	-- The ROM content
 	-- Format: reg_dst, alu_src, mem_to_reg, reg_write, mem_read, 
-	-- mem_write, branch, alu_op(1), alu_op(0)
+	-- mem_write, branch, alu_op(1), alu_op(0), jal, jump
 	signal rom : rom_t := (
 		--	      "RAMRMMBBOOJJ
 		0      => "100100001000",       -- R-type instruction (add, sub, and, or, slt)
@@ -39,11 +39,11 @@ architecture rom of controlv2 is
 		4      => "-0-000100100",       -- beq
 		5      => "-0-000010100",       -- bne
 		8      => "010100000000",       -- addi
-		10     => "010100000100",       -- slti
+		10     => "010100001100",       -- slti
 		35     => "011110000000",       -- lw
 		43     => "-1-001000000",       -- sw
 
-		others => "00000000000");
+		others => "000000000000");
 
 begin
 	(reg_dst,

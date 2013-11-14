@@ -49,7 +49,7 @@ architecture structure of cpuv2 is
 			 clock  : in  m32_1bit);
 	end component;
 
-	component control is
+	component controlv2 is
 		port(op_code    : in  m32_6bits;
 			 reg_dst    : out m32_1bit;
 			 alu_src    : out m32_1bit;
@@ -86,7 +86,7 @@ architecture structure of cpuv2 is
 			 clock : in  m32_1bit);     -- The reset signal
 	end component;
 
-	component alucontrol is
+	component alucontrolv2 is
 		port(i_op      : in  m32_2bits; -- ALUv2op out of control
 			 i_funct   : in  m32_6bits; -- Bits 0-5 of the instruction word
 			 o_jr      : out m32_1bit;  -- JR Control signal (Has to be handled here because JR is an R type instruction
@@ -177,8 +177,8 @@ begin
 		generic map(M => 32)
 		port map(sel    => jalselect,
 			     input0 => writeback,
-			     input1 => "PCPlus4",
-			     output => regwritedst);
+			     input1 => PCPlus4,
+			     output => registerwrite);
 
 	REGISTERS : regfile port map(src1   => instruction(25 downto 21),
 			                     src2   => instruction(20 downto 16),
@@ -197,7 +197,7 @@ begin
 	SHAMTEXTENDER : extender_Nbit_Mbit
 		generic map(N => 5, M => 32)
 		port map(i_C => '1',
-			     i_N => instruction(16 downto 6),
+			     i_N => instruction(10 downto 6),
 			     o_W => shamt);
 
 	MASTERALUv2 : ALUv2
@@ -228,7 +228,7 @@ begin
 			     i_N => instruction(15 downto 0),
 			     o_W => extended);
 
-	ALUCONTROLLER : alucontrol
+	ALUCONTROLLER : alucontrolv2
 		port map(i_op      => aluop,
 			     i_funct   => instruction(5 downto 0),
 			     o_jr      => jrselect,
@@ -239,7 +239,7 @@ begin
 	--Control I/O
 	-----------------------------------------------------------   
 
-	CONTROLLER : control port map(op_code    => instruction(31 downto 26),
+	CONTROLLER : controlv2 port map(op_code    => instruction(31 downto 26),
 			                      reg_dst    => regdst,
 			                      alu_src    => alusrc,
 			                      mem_to_reg => memtoreg,

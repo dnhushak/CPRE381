@@ -69,7 +69,7 @@ begin
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/imem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv1/imem.mif")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
@@ -80,7 +80,7 @@ begin
 	-- The data memory. Note that the write mask is hard wired to 1111, and
 	-- both data and q are connected to dmem_data
 	DATA_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/dmem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv1/dmem.mif")
 		port map(dmem_addr(9 downto 2),
 			     "1111",
 			     clock,
@@ -121,7 +121,7 @@ begin
 		wait for CCT;
 
 		-- Run for five clock cycles
-		wait for 15 * CCT;
+		wait for 20 * CCT;
 
 		-- Force the simulation to stop
 		assert false report "Simulation ends" severity failure;

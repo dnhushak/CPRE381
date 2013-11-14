@@ -11,17 +11,17 @@ entity alucontrolv2 is
 		 i_funct   : in  m32_6bits;     -- Bits 0-5 of the instruction word
 		 o_jr      : out m32_1bit;      -- JR Control signal (Has to be handled here because JR is an R type instruction
 		 o_shift   : out m32_1bit;      --select input A to be shamt
-		 o_alucont : out m32_4bits);    -- Output that determines ALU operation
+		 o_alucont : out m32_5bits);    -- Output that determines ALU operation
 end alucontrolv2;
 
 architecture structure of alucontrolv2 is
 begin
 	--Handle JR and JALR
-	o_jr <= '1' when (i_funct = "001000" or i_funct = "001001")
+	o_jr <= '1' when ((i_op & i_funct) = "10001000" or (i_op & i_funct) = "10001001")
 		else '0';
 
 	--Handle SLL, SRL, and SRA
-	o_shift <= '1' when (i_funct = "000000" or i_funct = "000010" or i_funct = "000011")
+	o_shift <= '1' when ((i_op & i_funct) = "10000000" or (i_op & i_funct) = "10000010" or (i_op & i_funct) = "10000011")
 		else '0';
 
 	-- Op Code:
@@ -32,7 +32,7 @@ begin
 		else "00110" when (i_op & i_funct) = "10100010" -- sub
 		else "00000" when (i_op & i_funct) = "10100100" -- and
 		else "00001" when (i_op & i_funct) = "10100101" -- or
-		else "00111" when (i_op & i_funct) = "10101010" -- slt
+		else "00111" when (i_op & i_funct) = "10101010" or i_op = "11" -- slt
 		else "10100" when (i_op & i_funct) = "10000000" -- sll
 		else "11111";
 
