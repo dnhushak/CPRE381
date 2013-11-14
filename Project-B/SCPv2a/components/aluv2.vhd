@@ -48,6 +48,8 @@ begin
 				r <= rdata1 NOR rdata2;
 			when "10000" =>             -- XOR
 				r <= rdata1 XOR rdata2;
+			when "10100" =>
+				r <= rdata2 sll rdata1; -- sll
 			when others =>              -- Otherwise, make output to be 0
 				r <= (others => '0');
 		end case;

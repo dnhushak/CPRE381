@@ -1,18 +1,17 @@
-
---Need to add instructions:
---addi
-	--Changing of control unit to output 1 for alu_src on the correct function code of addi
+--Done:
 --bne
-	--Muxing around the branch logic, need to make the branch control 2 bits
+-- Muxing around the branch logic, need to make the branch control 2 bits
 --slti
-	--Changing of control unit to output 1 for alu_src on the correct function code of addi
---sll
-	--Edit ALU to have magic shifter (sll, srl, and sla) in it, edit control and alu control to output correct opcode to select that
-	--Also have to have mux at the input of ALU in A for shift amount
+-- Changing of control unit to output 1 for alu_src on the correct function code of addi
+--addi
+-- Changing of control unit to output 1 for alu_src on the correct function code of addi
 --jal
-	--standard jump but also need to write back to the $ra register from the PC + 4 signal
+-- standard jump but also need to write back to the $ra register from the PC + 4 signal
 --jr
-	--standard jump, but from a register
+-- standard jump, but from a register
+--sll
+-- Edit ALU to have magic shifter (sll, srl, and sla) in it, edit control and alu control to output correct opcode to select that
+-- Also have to have mux at the input of ALU in A for shift amount
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -58,9 +57,10 @@ architecture structure of cpuv2 is
 			 reg_write  : out m32_1bit;
 			 mem_read   : out m32_1bit;
 			 mem_write  : out m32_1bit;
-			 branch     : out m32_1bit;
+			 branch     : out m32_2bits;
+			 alu_op     : out m32_2bits;
 			 jump       : out m32_1bit;
-			 alu_op     : out m32_2bits);
+			 jal        : out m32_1bit);
 	end component;
 
 	component adder is
@@ -72,7 +72,7 @@ architecture structure of cpuv2 is
 	component ALUv2 is
 		port(rdata1   : in  m32_word;
 			 rdata2   : in  m32_word;
-			 alu_code : in  m32_4bits;
+			 alu_code : in  m32_5bits;
 			 result   : out m32_word;
 			 zero     : out m32_1bit);
 	end component;
@@ -89,7 +89,9 @@ architecture structure of cpuv2 is
 	component alucontrol is
 		port(i_op      : in  m32_2bits; -- ALUv2op out of control
 			 i_funct   : in  m32_6bits; -- Bits 0-5 of the instruction word
-			 o_alucont : out m32_4bits); -- Output that determines ALUv2 operation
+			 o_jr      : out m32_1bit;  -- JR Control signal (Has to be handled here because JR is an R type instruction
+			 o_shift   : out m32_1bit;  --select input A to be shamt
+			 o_alucont : out m32_5bits); -- Output that determines ALUv2 operation
 	end component;
 
 	-- 2-to-1 MUX
@@ -122,16 +124,16 @@ architecture structure of cpuv2 is
 	--
 	-- Signals in the cpuv2
 	--PC Signals
-	signal PC, PCUpdate, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_word;
+	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_word;
 
 	-- Control signals
-	signal regdst, jump, branch, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne : m32_1bit;
-	signal aluop                                                                                    : m32_2bits;
-	signal s_alucontrol                                                                             : m32_4bits;
+	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect : m32_1bit;
+	signal aluop, branch                                                                                                                  : m32_2bits;
+	signal s_alucontrol                                                                                                                   : m32_5bits;
 
 	--Data
-	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, alumux : m32_word;
-	signal writemux                                                                    : m32_5bits;
+	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback : m32_word;
+	signal writemux, regwritedst                                                                                   : m32_5bits;
 
 	--Clock
 	signal CLK : m32_logic;
@@ -154,6 +156,7 @@ begin
 	-----------------------------------------------------------
 	--Register I/O
 	-----------------------------------------------------------
+
 	WRITESWITCHER : mux2to1
 		generic map(M => 5)
 		port map(sel    => regdst,
@@ -161,9 +164,25 @@ begin
 			     input1 => instruction(15 downto 11),
 			     output => writemux);
 
+	-- Write to return address register ($31 or $ra) for jal
+	JALSWITCHER : mux2to1
+		generic map(M => 5)
+		port map(sel    => jalselect,
+			     input0 => writemux,
+			     input1 => "11111",
+			     output => regwritedst);
+
+	-- Select return address for writing for jalselect
+	WADDRESSSWITCHER : mux2to1
+		generic map(M => 32)
+		port map(sel    => jalselect,
+			     input0 => writeback,
+			     input1 => "PCPlus4",
+			     output => regwritedst);
+
 	REGISTERS : regfile port map(src1   => instruction(25 downto 21),
 			                     src2   => instruction(20 downto 16),
-			                     dst    => writemux,
+			                     dst    => regwritedst,
 			                     wdata  => registerwrite,
 			                     rdata1 => read1,
 			                     rdata2 => read2,
@@ -174,19 +193,33 @@ begin
 	-----------------------------------------------------------
 	--ALUv2 I/O
 	-----------------------------------------------------------
+
+	SHAMTEXTENDER : extender_Nbit_Mbit
+		generic map(N => 5, M => 32)
+		port map(i_C => '1',
+			     i_N => instruction(16 downto 6),
+			     o_W => shamt);
+
 	MASTERALUv2 : ALUv2
-		port map(rdata1   => read1,
-			     rdata2   => alumux,
+		port map(rdata1   => alumux1,
+			     rdata2   => alumux2,
 			     alu_code => s_alucontrol,
 			     result   => aluresult,
 			     zero     => zero);
 
-	ALUv2SWITCHER : mux2to1
+	ALUSWITCHER1 : mux2to1
+		generic map(M => 32)
+		port map(sel    => shiftselect,
+			     input0 => read1,
+			     input1 => shamt,
+			     output => alumux1);
+
+	ALUSWITCHER2 : mux2to1
 		generic map(M => 32)
 		port map(sel    => alusrc,
 			     input0 => read2,
 			     input1 => extended,
-			     output => alumux);
+			     output => alumux2);
 
 	-- Extension is for branching and immediate loading into ALUv2
 	EXTENSION : extender_Nbit_Mbit
@@ -198,6 +231,8 @@ begin
 	ALUCONTROLLER : alucontrol
 		port map(i_op      => aluop,
 			     i_funct   => instruction(5 downto 0),
+			     o_jr      => jrselect,
+			     o_shift   => shiftselect,
 			     o_alucont => s_alucontrol);
 
 	-----------------------------------------------------------
@@ -212,8 +247,9 @@ begin
 			                      mem_read   => memread,
 			                      mem_write  => memwrite,
 			                      branch     => branch,
+			                      alu_op     => aluop,
 			                      jump       => jump,
-			                      alu_op     => aluop);
+			                      jal        => jalselect);
 
 	-----------------------------------------------------------
 	--Memory I/O
@@ -233,7 +269,7 @@ begin
 	WRITEBACKSWITCHER : mux2to1 generic map(M => 32) port map(sel => memtoreg,
 			input0 => aluresult,
 			input1 => memorydataread,
-			output => registerwrite);
+			output => writeback);
 
 	-----------------------------------------------------------
 	--PC Logic
@@ -259,15 +295,16 @@ begin
 			     src2   => branchaddressX4,
 			     result => branchaddress);
 
-	--AND branch and zero for BEQ
-	beq <= branch and zero;
-	one <= not zero;
-	bne <= branch and one;
+	--AND branch and zero for BEQ, AND branch and not(zero) for bne
+	beq        <= branch(0) and zero;
+	one        <= not zero;
+	bne        <= branch(1) and one;
+	takebranch <= beq or bne;
 
 	--Switch between PC + 4 and branch address (the result here called nojumpaddress)
 	BRANCHSWITCHER : mux2to1
 		generic map(M => 32)
-		port map(sel    => beq,
+		port map(sel    => takebranch,
 			     input0 => PCPlus4,
 			     input1 => branchaddress,
 			     output => nojumpaddress);
@@ -290,6 +327,14 @@ begin
 		port map(sel    => jump,
 			     input0 => nojumpaddress,
 			     input1 => jumpaddress,
+			     output => jumporbranch);
+
+	--Switch between previous addresses or register address for jump
+	JRSWITCHER : mux2to1
+		generic map(M => 32)
+		port map(sel    => jrselect,
+			     input0 => jumporbranch,
+			     input1 => aluresult,
 			     output => PCUpdate);
 end structure;
 

@@ -26,6 +26,10 @@ architecture behavior of ALU_Nbit_tb is
 	signal s_Op          : std_logic_vector(4 downto 0);
 	signal s_OF, s_Zero  : std_logic;
 
+
+-- Op Code:
+-- MUX MUX MUX BINV AINV
+
 -- Opcodes:
 -- 00000 AND
 -- 00001 OR
