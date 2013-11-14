@@ -13,9 +13,9 @@ architecture behavior of register_Nbit_tb is
 
 	component register_Nbit
 		generic(N : integer := BITS);
-		port(i_CLK : in  std_logic;     -- Clock input
-			 i_RST : in  std_logic;     -- Reset input
-			 i_WE  : in  std_logic;     -- Write enable input
+		port(c_CLK : in  std_logic;     -- Clock input
+			 c_RST : in  std_logic;     -- Reset input
+			 c_WE  : in  std_logic;     -- Write enable input
 			 i_A   : in  std_logic_vector(N - 1 downto 0); -- Data value input
 			 o_D   : out std_logic_vector(N - 1 downto 0)); -- Data value output
 	end component;
@@ -26,9 +26,9 @@ architecture behavior of register_Nbit_tb is
 
 begin
 	DUT : register_Nbit
-		port map(i_CLK => s_CLK,
-			     i_RST => s_RST,
-			     i_WE  => s_WE,
+		port map(c_CLK => s_CLK,
+			     c_RST => s_RST,
+			     c_WE  => s_WE,
 			     i_A   => s_D,
 			     o_D   => s_Q);
 

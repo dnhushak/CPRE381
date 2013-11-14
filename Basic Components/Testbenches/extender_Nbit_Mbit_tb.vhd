@@ -2,10 +2,10 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity extencer_Nbit_Mbit_tb is
-end extencer_Nbit_Mbit_tb;
+entity extender_Nbit_Mbit_tb is
+end extender_Nbit_Mbit_tb;
 
-architecture behavior of extencer_Nbit_Mbit_tb is
+architecture behavior of extender_Nbit_Mbit_tb is
 	component extender_Nbit_Mbit
 		generic(N : integer;
 			    M : integer);

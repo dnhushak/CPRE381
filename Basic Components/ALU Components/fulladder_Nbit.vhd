@@ -31,7 +31,7 @@ begin
 	o_C <= s_Carry(N);
 
 	-- Generate the series of 1 bit adders
-	g_adders : for I in 1 to N - 1 generate
+	g_adders : for I in 0 to N - 1 generate
 		FullAdd : fulladder_1bit
 			port map(i_A => i_A(I),
 				     i_B => i_B(I),

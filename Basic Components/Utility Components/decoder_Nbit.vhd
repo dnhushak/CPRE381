@@ -6,7 +6,7 @@ use work.utils.all;
 entity decoder_Nbit is
 	--N determines number of input bits to decoder (address size); output will be 2 ^ A
 	generic(N : integer := 2);
-	port(i_A : in  std_logic_vector(N downto 0);
+	port(i_A : in  std_logic_vector(N - 1 downto 0);
 		 o_D : out std_logic_vector((2 ** N) - 1 downto 0));
 
 end decoder_Nbit;

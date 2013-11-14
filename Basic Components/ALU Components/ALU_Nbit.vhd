@@ -19,16 +19,16 @@ end ALU_Nbit;
 
 architecture structure of ALU_Nbit is
 	component ALU_1bit
-		port(i_A      : in  std_logic;  --Input A
-			 i_B      : in  std_logic;  --Input B
-			 i_Ainv : in  std_logic;  --Invert A
-			 i_Binv : in  std_logic;  --Invert B
-			 i_C      : in  std_logic;  --Carry In
-			 i_L      : in  std_logic;  --Input "Less"
-			 c_Op     : in  std_logic_vector(2 downto 0); --Operation
-			 o_D      : out std_logic;  --Output Result
-			 o_C      : out std_logic;  --Carry Out
-			 o_Set    : out std_logic); --Set Out   
+		port(i_A    : in  std_logic;    --Input A
+			 i_B    : in  std_logic;    --Input B
+			 i_Ainv : in  std_logic;    --Invert A
+			 i_Binv : in  std_logic;    --Invert B
+			 i_C    : in  std_logic;    --Carry In
+			 i_L    : in  std_logic;    --Input "Less"
+			 c_Op   : in  std_logic_vector(2 downto 0); --Operation
+			 o_D    : out std_logic;    --Output Result
+			 o_C    : out std_logic;    --Carry Out
+			 o_Set  : out std_logic);   --Set Out   
 	end component;
 
 	component xor_2in
@@ -37,14 +37,14 @@ architecture structure of ALU_Nbit is
 			 o_D : out std_logic);
 	end component;
 
-	component or_Nbit
-		generic(N : integer := N);
+	component or_Nin
+		generic(N : integer);
 		port(i_A : in  std_logic_vector(N - 1 downto 0);
 			 o_D : out std_logic);
 
 	end component;
 
-	component inv
+	component inv_1bit
 		port(i_A : in  std_logic;
 			 o_D : out std_logic);
 	end component;
@@ -68,7 +68,7 @@ begin
 			     c_Op   => c_Op,
 			     o_D    => o_D(0),
 			     o_C    => s_Carry(0),
-			     o_Set    => s_Set(0));
+			     o_Set  => s_Set(0));
 
 	---------------------------------------------------------
 	--MSB's: 1 Bit ALU's								   --
@@ -84,7 +84,7 @@ begin
 				     c_Op   => c_Op,
 				     o_D    => o_D(I),
 				     o_C    => s_Carry(I),
-				     o_Set    => s_Set(I));
+				     o_Set  => s_Set(I));
 	end generate MSB;
 
 	---------------------------------------------------------
@@ -100,13 +100,13 @@ begin
 	--LEVEL 3: OR of all Adder Outputs for zero output	   --
 	---------------------------------------------------------
 
-	ZEROOR : or_Nbit
+	ZEROOR : or_Nin
 		generic map(N => N)
 		port map(i_A => s_Set,
-			     o_D => s_OROUT);
+			     o_D => s_Orout);
 
-	ZEROINV : inv
-		port map(i_A => s_OROUT,
+	ZEROINV : inv_1bit
+		port map(i_A => s_Orout,
 			     o_D => o_Zero);
 
 end structure;

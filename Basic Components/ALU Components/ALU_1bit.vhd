@@ -4,16 +4,16 @@ use work.utils.all;
 use IEEE.numeric_std.all;
 
 entity ALU_1bit is
-	port(i_A      : in  std_logic;      --Input A
-		 i_B      : in  std_logic;      --Input B
-		 i_Ainv : in  std_logic;      --Invert A
-		 i_Binv : in  std_logic;      --Invert B
-		 i_C      : in  std_logic;      --Carry In
-		 i_L      : in  std_logic;      --Input "Less"
-		 c_Op     : in  std_logic_vector(2 downto 0); --Operation
-		 o_D      : out std_logic;      --Output Result
-		 o_C      : out std_logic;      --Carry Out
-		 o_Set    : out std_logic);     --Set Out       
+	port(i_A    : in  std_logic;        --Input A
+		 i_B    : in  std_logic;        --Input B
+		 i_Ainv : in  std_logic;        --Invert A
+		 i_Binv : in  std_logic;        --Invert B
+		 i_C    : in  std_logic;        --Carry In
+		 i_L    : in  std_logic;        --Input "Less"
+		 c_Op   : in  std_logic_vector(2 downto 0); --Operation
+		 o_D    : out std_logic;        --Output Result
+		 o_C    : out std_logic;        --Carry Out
+		 o_Set  : out std_logic);       --Set Out       
 
 end ALU_1bit;
 
@@ -29,7 +29,7 @@ architecture structure of ALU_1bit is
 	component mux_1bit_Min
 		generic(M : integer;
 			    A : integer);
-		port(i_C : in  std_logic_vector(A - 1 downto 0);
+		port(c_S : in  std_logic_vector(A - 1 downto 0);
 			 i_A : in  std_logic_vector(M - 1 downto 0);
 			 o_D : out std_logic);
 	end component;
@@ -72,7 +72,7 @@ begin
 	MUXA : mux_1bit_Min
 		generic map(M => 2,
 			        A => 1)
-		port map(i_C(0) => i_Ainv,
+		port map(c_S(0) => i_Ainv,
 			     i_A(0) => i_A,
 			     i_A(1) => s_Ainv,
 			     o_D    => s_Amux);
@@ -85,7 +85,7 @@ begin
 		generic map(
 			M => 2,
 			A => 1)
-		port map(i_C(0) => i_Binv,
+		port map(c_S(0) => i_Binv,
 			     i_A(0) => i_B,
 			     i_A(1) => s_Binv,
 			     o_D    => s_Bmux);
@@ -125,13 +125,13 @@ begin
 	CONTROLMUX : mux_1bit_Min
 		generic map(M => 8,
 			        A => 3)
-		port map(i_C             => c_Op,
+		port map(c_S             => c_Op,
 			     i_A(0)          => Andout,
 			     i_A(1)          => s_Orout,
 			     i_A(2)          => s_Addout,
 			     i_A(3)          => i_L,
 			     i_A(4)          => s_Xorout,
-			     i_A(7 downto 5) => '0',
+			     i_A(7 downto 5) => "000",
 			     o_D             => o_D);
 
 end structure;

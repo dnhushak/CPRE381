@@ -3,16 +3,15 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity decoder_Nbit_tb is
-	generic(INBITS : integer := 5);
-	signal OUTBITS : integer := 2 ** INBITS;
+	generic(INBITS  : integer := 5;
+		    OUTBITS : integer := 32);
 end decoder_Nbit_tb;
 
 architecture behavior of decoder_Nbit_tb is
-
 	component decoder_Nbit
 		generic(N : integer := INBITS);
 		port(i_A : in  std_logic_vector;
-			 o_R : out std_logic_vector);
+			 o_D : out std_logic_vector);
 	end component;
 
 	signal s_Encoded  : std_logic_vector(INBITS - 1 downto 0) := (others => '0');
@@ -21,7 +20,7 @@ architecture behavior of decoder_Nbit_tb is
 begin
 	decoder : decoder_Nbit
 		port map(i_A => s_Encoded,
-			     o_R => s_Decodedn);
+			     o_D => s_Decodedn);
 
 	process
 	begin

@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity or_Nin is
-	generic(N : integer := 2);
+	generic(N : integer := 32);
 	port(i_A : in  std_logic_vector(N - 1 downto 0);
 		 o_D : out std_logic);
 

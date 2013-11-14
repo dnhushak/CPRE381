@@ -6,10 +6,10 @@ use IEEE.numeric_std.all;
 entity mux_Nbit_2in is
 	--N is input width
 	generic(N : integer := 32);
-	port(c_S : in  std_logic_vector;
+	port(c_S : in  std_logic;
 		 i_A : in  std_logic_vector(N - 1 downto 0);
 		 i_B : in  std_logic_vector(N - 1 downto 0);
-		 o_D : out std_logic);
+		 o_D : out std_logic_vector(N - 1 downto 0));
 
 end mux_Nbit_2in;
 

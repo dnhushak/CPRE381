@@ -11,11 +11,11 @@ entity registerfile_Nbit_Mreg is
 	generic(N : integer := 32;
 		    M : integer := 32;
 		    A : integer := 5);
-	port(c_SLK : in  std_logic;         -- Clock input
+	port(c_CLK : in  std_logic;         -- Clock input
 		 i_A   : in  std_logic_vector(N - 1 downto 0); -- Data Input
 		 i_Wa  : in  std_logic_vector(A - 1 downto 0); -- Write address
-		 i_WE  : in  std_logic;         -- Global Write Enable
-		 i_RST : in  std_logic_vector(M - 1 downto 0); -- Register Reset vector
+		 c_WE  : in  std_logic;         -- Global Write Enable
+		 c_RST : in  std_logic_vector(M - 1 downto 0); -- Register Reset vector
 		 i_R1a : in  std_logic_vector(A - 1 downto 0); -- Read 1 address
 		 o_D1o : out std_logic_vector(N - 1 downto 0); -- Read 1 Data Output
 		 i_R2a : in  std_logic_vector(A - 1 downto 0); -- Read 2 address
@@ -26,9 +26,9 @@ end registerfile_Nbit_Mreg;
 architecture structure of registerfile_Nbit_Mreg is
 	component register_Nbit
 		generic(N : integer := N);
-		port(c_SLK : in  std_logic;     -- Clock input
-			 i_RST : in  std_logic;     -- Reset input
-			 i_WE  : in  std_logic;     -- Write enable input
+		port(c_CLK : in  std_logic;     -- Clock input
+			 c_RST : in  std_logic;     -- Reset input
+			 c_WE  : in  std_logic;     -- Write enable input
 			 i_A   : in  std_logic_vector; -- Data value input
 			 o_D   : out std_logic_vector); -- Data value output
 	end component;
@@ -39,7 +39,7 @@ architecture structure of registerfile_Nbit_Mreg is
 			 o_D : out std_logic_vector); -- 2^Address size decoded output
 	end component;
 
-	component and2
+	component and_2in
 		port(i_A : in  std_logic;
 			 i_B : in  std_logic;
 			 o_D : out std_logic);
@@ -58,8 +58,8 @@ architecture structure of registerfile_Nbit_Mreg is
 
 	--Register Outputs
 	signal s_RegOut : array_Nbit(M - 1 downto 0, N - 1 downto 0);
---	type singleRegOut is array (integer range <>) of std_logic_vector(N - 1 downto 0);
---	signal s_RegOutSingle : singleRegOut(M - 1 downto 0);
+	type singleRegOut is array (integer range <>) of std_logic_vector(N - 1 downto 0);
+	signal s_RegOutSingle : singleRegOut(M - 1 downto 0);
 
 	--Decoded Write Address
 	signal s_Wa : std_logic_vector(M - 1 downto 0);
@@ -73,11 +73,11 @@ begin
 	------------------------------------------------------------------------
 	g_Registers : for I in 0 to M - 1 generate
 		Registers : register_Nbit
-			port map(c_SLK               => c_SLK,
-				     i_RST               => i_RST(I),
-				     i_WE                => s_WE(I),
-				     i_A                 => i_A,
-				     o_D(N - 1 downto 0) => s_RegOut(I, N - 1));
+			port map(c_CLK => c_CLK,
+				     c_RST => c_RST(I),
+				     c_WE  => s_WE(I),
+				     i_A   => i_A,
+				     o_D   => s_RegOutSingle(I));
 	end generate g_Registers;
 
 	------------------------------------------------------------------------
@@ -85,19 +85,19 @@ begin
 	--the register output has to go through this intermediary RegSingle 
 	-- signal because of VHDL's shortcomings in type matching
 	------------------------------------------------------------------------
---	gen_connectregouts : for I in 0 to M - 1 generate
---		gen_connectregbits : for J in 0 to N - 1 generate
---			s_RegOut(I, J) <= s_RegOutSingle(I)(J);
---		end generate gen_connectregbits;
---	end generate gen_connectregouts;
+	gen_connectregouts : for I in 0 to M - 1 generate
+		gen_connectregbits : for J in 0 to N - 1 generate
+			s_RegOut(I, J) <= s_RegOutSingle(I)(J);
+		end generate gen_connectregbits;
+	end generate gen_connectregouts;
 
 	------------------------------------------------------------------------
 	--Ands for global write enable
 	------------------------------------------------------------------------
 	g_Ands : for I in 0 to M - 1 generate
-		WriteEnableAnds : and2
+		WriteEnableAnds : and_2in
 			port map(i_A => s_Wa(I),
-				     i_B => i_WE,
+				     i_B => c_WE,
 				     o_D => s_WE(I));
 	end generate g_Ands;
 
