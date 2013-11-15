@@ -2,19 +2,18 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use work.utils.all;
 
-entity rightshifter_Nbit is
+entity leftshifter_Nbit is
 	-- N is number of input bits (must be a power of 2)
 	-- A is size of shift amount (A^2 = N)
 	generic(N : integer := 32;
 		    A : integer := 5);
 	port(i_A     : in  std_logic_vector(N - 1 downto 0); -- input to shift
 		 c_Shamt : in  std_logic_vector(A - 1 downto 0); -- amount to shift by
-		 c_Ext   : in  std_logic;       -- Sign Extension select (1 for sign extended (sra), 0 for not, (srl)
 		 o_D     : out std_logic_vector(N - 1 downto 0)); -- shifted output
 
-end rightshifter_Nbit;
+end leftshifter_Nbit;
 
-architecture structure of rightshifter_Nbit is
+architecture structure of leftshifter_Nbit is
 	component mux_1bit_2in
 		port(c_S : in  std_logic;
 			 i_A : in  std_logic;
@@ -22,19 +21,9 @@ architecture structure of rightshifter_Nbit is
 			 o_D : out std_logic);
 	end component;
 
-	signal s_levelOut  : array_Nbit(A downto 0, N - 1 downto 0);
-	signal s_extension : std_logic;
+	signal s_levelOut : array_Nbit(A downto 0, N - 1 downto 0);
 
 begin
-
-	-----------------------------------------------
-	-- Sign s_extension Mux                      --
-	-----------------------------------------------
-	SignExtendSelect : mux_1bit_2in
-		port map(c_S => c_Ext,
-			     i_A => '0',
-			     i_B => i_A(N - 1),
-			     o_D => s_extension);
 
 	-----------------------------------------------
 	-- Multiple Mux Levels                       --
@@ -56,15 +45,16 @@ begin
 				port map(c_S => c_Shamt(Level),
 					     i_A => s_levelOut(Level,
 						 Mux),
-					     i_B => s_extension,
+					     i_B => '0',
 					     o_D => s_levelOut(Level + 1,
 						 Mux));
 		end generate gen_msbmux;
 	end generate gen_levels;
 
+	-- See rightshifter. Exact same gate structure, just input and output bits are mirrored (bit 0 -> bit N-1, bit 1 -> bit N-2 etc...)
 	gen_connectregbits : for I in 0 to N - 1 generate
-		s_levelOut(0, I) <= i_A(I);
-		o_D(I)           <= s_levelOut(A, I);
+		s_levelOut(0, I) <= i_A(N - 1 - I);
+		o_D(I)           <= s_levelOut(A, N - 1 - I);
 	end generate gen_connectregbits;
 
 end structure;
