@@ -1,52 +1,39 @@
---Done:
---bne
--- Muxing around the branch logic, need to make the branch control 2 bits
---slti
--- Changing of control unit to output 1 for alu_src on the correct function code of addi
---addi
--- Changing of control unit to output 1 for alu_src on the correct function code of addi
---jal
--- standard jump but also need to write back to the $ra register from the PC + 4 signal
---jr
--- standard jump, but from a register
---sll
--- Edit ALU to have magic shifter (sll, srl, and sla) in it, edit control and alu control to output correct opcode to select that
--- Also have to have mux at the input of ALU in A for shift amount
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
 
 entity cpuv3 is
-	port(imem_addr  : out m32_word;     -- Instruction memory address
-		 inst       : in  m32_word;     -- Instruction
-		 dmem_addr  : out m32_word;     -- Data memory address
+	-- Use N to change the global bit width of the CPU, A should change with it such that 2^A = N
+	-- 64 bit MIPS processor? I think I should get some extra points =D
+	generic(N : integer := 32;
+		    A : integer := 5);
+	port(imem_addr  : out m32_vector(N - 1 downto 0); -- Instruction memory address
+		 inst       : in  m32_vector(N - 1 downto 0); -- Instruction
+		 dmem_addr  : out m32_vector(N - 1 downto 0); -- Data memory address
 		 dmem_read  : out m32_1bit;     -- Data memory read?
 		 dmem_write : out m32_1bit;     -- Data memory write?
 		 dmem_wmask : out m32_4bits;    -- Data memory write mask
-		 dmem_rdata : in  m32_word;     -- Data memory read data
-		 dmem_wdata : out m32_word;     -- Data memory write data
+		 dmem_rdata : in  m32_vector(N - 1 downto 0); -- Data memory read data
+		 dmem_wdata : out m32_vector(N - 1 downto 0); -- Data memory write data
 		 reset      : in  m32_1bit;     -- Reset signal
 		 clock      : in  m32_1bit);    -- System clock
 end cpuv3;
 
--- This architecture of cpuv3 must be dominantly structural, with no behavior 
--- modeling, and only data flow statements to copy/split/merge signals or 
--- with a single level of basic logic gates.
 architecture structure of cpuv3 is
-	-- More code here
-
-	-- The register file
-	component regfile is
-		port(src1   : in  m32_5bits;
-			 src2   : in  m32_5bits;
-			 dst    : in  m32_5bits;
-			 wdata  : in  m32_word;
-			 rdata1 : out m32_word;
-			 rdata2 : out m32_word;
-			 WE     : in  m32_1bit;
-			 reset  : in  m32_1bit;
-			 clock  : in  m32_1bit);
+	component registerfile_Nbit_Mreg is
+		-- N is size of register, M is number of registers (MUST be power of 2), A is size of register addresses (A MUST equal log2(M))
+		generic(N : integer := N;
+			    M : integer := 32;
+			    A : integer := 5);
+		port(c_CLK : in  m32_1bit;      -- Clock input
+			 i_A   : in  m32_vector(N - 1 downto 0); -- Data Input
+			 i_Wa  : in  m32_vector(A - 1 downto 0); -- Write address
+			 c_WE  : in  m32_1bit;      -- Global Write Enable
+			 c_RST : in  m32_vector(M - 1 downto 0); -- Register Reset vector
+			 i_R1a : in  m32_vector(A - 1 downto 0); -- Read 1 address
+			 o_D1o : out m32_vector(N - 1 downto 0); -- Read 1 Data Output
+			 i_R2a : in  m32_vector(A - 1 downto 0); -- Read 2 address
+			 o_D2o : out m32_vector(N - 1 downto 0)); -- Read 2 Data Output
 	end component;
 
 	component controlv2 is
@@ -63,27 +50,35 @@ architecture structure of cpuv3 is
 			 jal        : out m32_1bit);
 	end component;
 
-	component adder is
-		port(src1   : in  m32_word;
-			 src2   : in  m32_word;
-			 result : out m32_word);
+	component fulladder_Nbit is
+		generic(N : integer := N);
+		port(i_A : in  m32_vector(N - 1 downto 0);
+			 i_B : in  m32_vector(N - 1 downto 0);
+			 i_C : in  m32_1bit;
+			 o_D : out m32_vector(N - 1 downto 0);
+			 o_C : out m32_1bit);
 	end component;
 
-	component ALUv2 is
-		port(rdata1   : in  m32_word;
-			 rdata2   : in  m32_word;
-			 alu_code : in  m32_5bits;
-			 result   : out m32_word;
-			 zero     : out m32_1bit);
+	component ALU_Nbit is
+		generic(N : integer := N);
+		port(i_A    : in  m32_vector(N - 1 downto 0); --Input A
+			 i_B    : in  m32_vector(N - 1 downto 0); --Input B
+			 i_Ainv : in  m32_1bit;     --Invert A
+			 i_Binv : in  m32_1bit;     --Invert B
+			 i_C    : in  m32_1bit;     --Carry In
+			 c_Op   : in  m32_vector(2 downto 0); --Operation
+			 o_D    : out m32_vector(N - 1 downto 0); --Output Result
+			 o_OF   : out m32_1bit;     --Overflow Output
+			 o_Zero : out m32_1bit);    --Zero Output
 	end component;
 
-	component reg is
-		generic(M : integer := 32);     -- Size of the register
-		port(D     : in  m32_vector(M - 1 downto 0); -- Data input
-			 Q     : out m32_vector(M - 1 downto 0); -- Data output
-			 WE    : in  m32_1bit;      -- Write enableenable
-			 reset : in  m32_1bit;      -- The clock signal
-			 clock : in  m32_1bit);     -- The reset signal
+	component register_Nbit is
+		generic(N : integer := N);      -- Size of the register
+		port(c_CLK : in  m32_1bit;      -- Clock
+			 c_RST : in  m32_1bit;      -- Reset
+			 c_WE  : in  m32_1bit;      -- Write enable
+			 i_A   : in  m32_vector(N - 1 downto 0); -- Input
+			 o_D   : out m32_vector(N - 1 downto 0)); -- Output
 	end component;
 
 	component alucontrolv2 is
@@ -94,37 +89,33 @@ architecture structure of cpuv3 is
 			 o_alucont : out m32_5bits); -- Output that determines ALUv2 operation
 	end component;
 
-	-- 2-to-1 MUX
-	component mux2to1 is
-		generic(M : integer := 1);      -- Number of bits in the inputs and output
-		port(input0 : in  m32_vector(M - 1 downto 0);
-			 input1 : in  m32_vector(M - 1 downto 0);
-			 sel    : in  m32_1bit;
-			 output : out m32_vector(M - 1 downto 0));
+	component mux_Nbit_2in is
+		generic(N : integer := 1);      -- Number of bits in the inputs and output
+		port(c_S : in  m32_1bit;
+			 i_A : in  m32_vector(N - 1 downto 0);
+			 i_B : in  m32_vector(N - 1 downto 0);
+			 o_D : out m32_vector(N - 1 downto 0));
 	end component;
 
 	component extender_Nbit_Mbit is
 		generic(N : integer := 8;
-			    M : integer := 32);
-		port(i_C : in  std_logic;       --Control Input (0 is zero exnension, 1 is sign extension)
-			 i_N : in  std_logic_vector(N - 1 downto 0); --N-bit Input
-			 o_W : out std_logic_vector(M - 1 downto 0)); --Full Word Output
+			    M : integer := N);
+		port(c_Ext : in  m32_1bit;      --Control Input (0 is zero extension, 1 is sign extension)
+			 i_A   : in  m32_vector(N - 1 downto 0); --N-bit Input
+			 o_D   : out m32_vector(M - 1 downto 0)); --Full Word Output
 	end component;
 
-	component barrelshift is
-		generic(N : integer := 31);
-		port(i_A   : in  std_logic_vector(N - 1 downto 0); -- input to shift
-			 i_S   : in  std_logic_vector(4 downto 0); -- amount to shift by
-			 i_FS  : in  std_logic;     -- select signal for flipping input
-			 i_Ext : in  std_logic;     -- determines whether to fill front end with 1 or 0 (always 0 when left shift)
-			 o_F   : out std_logic_vector(N - 1 downto 0)); -- shifted output
+	component leftshifter_Nbit is
+		generic(N : integer := N;
+			    A : integer := A);
+		port(i_A     : in  m32_vector(N - 1 downto 0); -- input to shift
+			 c_Shamt : in  m32_vector(A - 1 downto 0); -- amount to shift by
+			 o_D     : out m32_vector(N - 1 downto 0)); -- shifted output
 
 	end component;
 
-	--
-	-- Signals in the +
-	--PC Signals
-	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_word;
+	-- PC Signals
+	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(N - 1 downto 0);
 
 	-- Control signals
 	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect : m32_1bit;
@@ -132,7 +123,7 @@ architecture structure of cpuv3 is
 	signal s_alucontrol                                                                                                                   : m32_5bits;
 
 	--Data
-	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback : m32_word;
+	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback : m32_vector(N - 1 downto 0);
 	signal writemux, regwritedst                                                                                   : m32_5bits;
 
 	--Clock
@@ -142,13 +133,13 @@ begin
 	-----------------------------------------------------------
 	--Instruction I/O
 	-----------------------------------------------------------
-	PCREG : reg
-		generic map(M => 32)            -- Size of the register
-		port map(D     => PCUpdate,     -- Data input
-			     Q     => PC,           -- Data output
-			     WE    => '1',          -- Write enableenable
-			     reset => reset,        -- The clock signal
-			     clock => clock);       -- The reset signal
+	PCREG : register_Nbit
+		generic map(N => N)             -- Size of the register
+		port map(i_A   => PCUpdate,     -- Data input
+			     o_D   => PC,           -- Data output
+			     c_WE  => '1',          -- Write enable
+			     c_RST => reset,        -- The clock signal
+			     c_CLK => clock);       -- The reset signal
 
 	imem_addr   <= PC;
 	instruction <= inst;
@@ -157,76 +148,88 @@ begin
 	--Register I/O
 	-----------------------------------------------------------
 
-	WRITESWITCHER : mux2to1
-		generic map(M => 5)
-		port map(sel    => regdst,
-			     input0 => instruction(20 downto 16),
-			     input1 => instruction(15 downto 11),
-			     output => writemux);
+	WRITESWITCHER : mux_Nbit_2in
+		generic map(N => 5)
+		port map(c_S => regdst,
+			     i_A => instruction(20 downto 16),
+			     i_B => instruction(15 downto 11),
+			     o_D => writemux);
 
 	-- Write to return address register ($31 or $ra) for jal
-	JALSWITCHER : mux2to1
-		generic map(M => 5)
-		port map(sel    => jalselect,
-			     input0 => writemux,
-			     input1 => "11111",
-			     output => regwritedst);
+	JALSWITCHER : mux_Nbit_2in
+		generic map(N => 5)
+		port map(c_S => jalselect,
+			     i_A => writemux,
+			     i_B => "11111",
+			     o_D => regwritedst);
 
 	-- Select return address for writing for jalselect
-	WADDRESSSWITCHER : mux2to1
-		generic map(M => 32)
-		port map(sel    => jalselect,
-			     input0 => writeback,
-			     input1 => PCPlus4,
-			     output => registerwrite);
+	WADDRESSSWITCHER : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => jalselect,
+			     i_A => writeback,
+			     i_B => PCPlus4,
+			     o_D => registerwrite);
 
-	REGISTERS : regfile port map(src1   => instruction(25 downto 21),
-			                     src2   => instruction(20 downto 16),
-			                     dst    => regwritedst,
-			                     wdata  => registerwrite,
-			                     rdata1 => read1,
-			                     rdata2 => read2,
-			                     WE     => regwrite,
-			                     reset  => reset,
-			                     clock  => CLK);
+	REGISTERS : registerfile_Nbit_Mreg
+		generic map(N => N,
+			        M => 32,
+			        A => 5)
+		port map(i_R1a                 => instruction(25 downto 21),
+			     i_R2a                 => instruction(20 downto 16),
+			     i_Wa                  => regwritedst,
+			     i_A                   => registerwrite,
+			     o_D1o                 => read1,
+			     o_D2o                 => read2,
+			     c_WE                  => regwrite,
+			     c_RST(N - 1 downto 1) => reset,
+			     c_RST(0)              => '1',
+			     c_CLK                 => CLK);
 
 	-----------------------------------------------------------
 	--ALUv2 I/O
 	-----------------------------------------------------------
 
 	SHAMTEXTENDER : extender_Nbit_Mbit
-		generic map(N => 5, M => 32)
-		port map(i_C => '1',
-			     i_N => instruction(10 downto 6),
-			     o_W => shamt);
+		generic map(N => 5,
+			        M => N)
+		port map(c_Ext => '1',
+			     i_A   => instruction(10 downto 6),
+			     o_D   => shamt);
 
-	MASTERALUv2 : ALUv2
-		port map(rdata1   => alumux1,
-			     rdata2   => alumux2,
-			     alu_code => s_alucontrol,
-			     result   => aluresult,
-			     zero     => zero);
+	-- ALU Op is: Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
+	MASTERALUv2 : ALU_Nbit
+		generic map(N => N)
+		port map(i_A    => alumux1,
+			     i_B    => alumux2,
+			     i_Ainv => s_alucontrol(3),
+			     i_Binv => s_alucontrol(2),
+			     i_C    => s_alucontrol(2),
+			     c_Op   => s_alucontrol(4) & s_alucontrol(1 downto 0),
+			     o_D    => aluresult,
+			     o_OF   => "unused",
+			     o_Zero => zero);
 
-	ALUSWITCHER1 : mux2to1
-		generic map(M => 32)
-		port map(sel    => shiftselect,
-			     input0 => read1,
-			     input1 => shamt,
-			     output => alumux1);
+	ALUSWITCHER1 : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => shiftselect,
+			     i_A => read1,
+			     i_B => shamt,
+			     o_D => alumux1);
 
-	ALUSWITCHER2 : mux2to1
-		generic map(M => 32)
-		port map(sel    => alusrc,
-			     input0 => read2,
-			     input1 => extended,
-			     output => alumux2);
+	ALUSWITCHER2 : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => alusrc,
+			     i_A => read2,
+			     i_B => extended,
+			     o_D => alumux2);
 
 	-- Extension is for branching and immediate loading into ALUv2
 	EXTENSION : extender_Nbit_Mbit
-		generic map(N => 16, M => 32)
-		port map(i_C => '1',
-			     i_N => instruction(15 downto 0),
-			     o_W => extended);
+		generic map(N => 16, M => N)
+		port map(c_Ext => '1',
+			     i_A   => instruction(15 downto 0),
+			     o_D   => extended);
 
 	ALUCONTROLLER : alucontrolv2
 		port map(i_op      => aluop,
@@ -240,16 +243,16 @@ begin
 	-----------------------------------------------------------   
 
 	CONTROLLER : controlv2 port map(op_code    => instruction(31 downto 26),
-			                      reg_dst    => regdst,
-			                      alu_src    => alusrc,
-			                      mem_to_reg => memtoreg,
-			                      reg_write  => regwrite,
-			                      mem_read   => memread,
-			                      mem_write  => memwrite,
-			                      branch     => branch,
-			                      alu_op     => aluop,
-			                      jump       => jump,
-			                      jal        => jalselect);
+			                        reg_dst    => regdst,
+			                        alu_src    => alusrc,
+			                        mem_to_reg => memtoreg,
+			                        reg_write  => regwrite,
+			                        mem_read   => memread,
+			                        mem_write  => memwrite,
+			                        branch     => branch,
+			                        alu_op     => aluop,
+			                        jump       => jump,
+			                        jal        => jalselect);
 
 	-----------------------------------------------------------
 	--Memory I/O
@@ -266,34 +269,41 @@ begin
 	-----------------------------------------------------------
 	--Writeback
 	-----------------------------------------------------------   
-	WRITEBACKSWITCHER : mux2to1 generic map(M => 32) port map(sel => memtoreg,
-			input0 => aluresult,
-			input1 => memorydataread,
-			output => writeback);
+	WRITEBACKSWITCHER : mux_Nbit_2in
+		generic map(N => 32)
+		port map(c_S => memtoreg,
+			     i_A => aluresult,
+			     i_B => memorydataread,
+			     o_D => writeback);
 
 	-----------------------------------------------------------
 	--PC Logic
 	-----------------------------------------------------------  
 
 	--Add four to PC 
-	PCADDFOUR : adder
-		port map(src1   => PC,
-			     src2   => X"00000004",
-			     result => PCPlus4);
+	PCADDFOUR : fulladder_Nbit
+		generic map(N => N)
+		port map(i_A => PC,
+			     i_B => X"00000004",
+			     i_C => '0',
+			     o_D => PCPlus4,
+			     o_C => "unused");
 
-	BRANCHSHIFTER : barrelshift
-		generic map(N => 31)
-		port map(i_A   => extended,
-			     i_S   => "00010",
-			     i_FS  => '0',
-			     i_Ext => '0',
-			     o_F   => branchaddressX4);
+	BRANCHSHIFTER : leftshifter_Nbit
+		generic map(N => N,
+			        A => A)
+		port map(i_A     => extended,
+			     c_Shamt => "00010",
+			     o_D     => branchaddressX4);
 
 	--Add PC +4 to multiplied relative Branch Address to get absolute PC address
-	BRANCHADDER : adder
-		port map(src1   => PCPlus4,
-			     src2   => branchaddressX4,
-			     result => branchaddress);
+	BRANCHADDER : fulladder_Nbit
+		generic map(N => N)
+		port map(i_A => PCPlus4,
+			     i_B => branchaddressX4,
+			     i_C => '0',
+			     o_D => branchaddress,
+			     o_C => "unused");
 
 	--AND branch and zero for BEQ, AND branch and not(zero) for bne
 	beq        <= branch(0) and zero;
@@ -302,39 +312,38 @@ begin
 	takebranch <= beq or bne;
 
 	--Switch between PC + 4 and branch address (the result here called nojumpaddress)
-	BRANCHSWITCHER : mux2to1
-		generic map(M => 32)
-		port map(sel    => takebranch,
-			     input0 => PCPlus4,
-			     input1 => branchaddress,
-			     output => nojumpaddress);
+	BRANCHSWITCHER : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => takebranch,
+			     i_A => PCPlus4,
+			     i_B => branchaddress,
+			     o_D => nojumpaddress);
 
 	jumpinstruction <= "000000" & instruction(25 downto 0);
 
-	INSTRUCTIONSHIFTER : barrelshift
-		generic map(N => 31)
-		port map(i_A   => jumpinstruction,
-			     i_S   => "00010",
-			     i_FS  => '0',
-			     i_Ext => '0',
-			     o_F   => jumpinstructionX4);
+	INSTRUCTIONSHIFTER : leftshifter_Nbit
+		generic map(N => N,
+			        A => A)
+		port map(i_A     => jumpinstruction,
+			     c_Shamt => "00010",
+			     o_D     => jumpinstructionX4);
 
 	jumpaddress <= PCPlus4(31 downto 28) & jumpinstructionX4(27 downto 0);
 
 	--Switch between jump address and non-jump address
-	JUMPSWITCHER : mux2to1
-		generic map(M => 32)
-		port map(sel    => jump,
-			     input0 => nojumpaddress,
-			     input1 => jumpaddress,
-			     output => jumporbranch);
+	JUMPSWITCHER : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => jump,
+			     i_A => nojumpaddress,
+			     i_B => jumpaddress,
+			     o_D => jumporbranch);
 
 	--Switch between previous addresses or register address for jump
-	JRSWITCHER : mux2to1
-		generic map(M => 32)
-		port map(sel    => jrselect,
-			     input0 => jumporbranch,
-			     input1 => aluresult,
-			     output => PCUpdate);
+	JRSWITCHER : mux_Nbit_2in
+		generic map(N => N)
+		port map(c_S => jrselect,
+			     i_A => jumporbranch,
+			     i_B => aluresult,
+			     o_D => PCUpdate);
 end structure;
 

@@ -27,8 +27,6 @@ architecture behavior of ALU_Nbit_tb is
 	signal s_OF, s_Zero  : std_logic;
 
 
--- Op Code:
--- MUX MUX MUX BINV AINV
 
 -- Opcodes:
 -- 00000 AND
@@ -39,7 +37,7 @@ architecture behavior of ALU_Nbit_tb is
 -- 11000 NOR
 -- 11001 NAND
 -- 00100 XOR
--- Ainv, Binv & Cin, Mux(1), Mux(0)
+-- Ainv, Binv & Cin, Mux(2), Mux(1), Mux(0)
 
 begin
 	ALU : ALU_Nbit
