@@ -69,7 +69,7 @@ begin
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2a/imem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2a/imem_sort.mif")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
@@ -120,8 +120,7 @@ begin
 		reset <= '0';
 		wait for CCT;
 
-		-- Run for five clock cycles
-		wait for 25 * CCT;
+		wait;
 
 		-- Force the simulation to stop
 		assert false report "Simulation ends" severity failure;

@@ -10,7 +10,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use work.mips32.all;
 
-entity controlv2 is
+entity controlv3 is
 	port(op_code    : in  m32_6bits;
 		 reg_dst    : out m32_1bit;
 		 alu_src    : out m32_1bit;
@@ -22,9 +22,9 @@ entity controlv2 is
 		 alu_op     : out m32_2bits;
 		 jump       : out m32_1bit;
 		 jal        : out m32_1bit);
-end controlv2;
+end controlv3;
 
-architecture rom of controlv2 is
+architecture rom of controlv3 is
 	subtype code_t is m32_vector(11 downto 0);
 	type rom_t is array (0 to 63) of code_t;
 

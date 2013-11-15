@@ -1,4 +1,4 @@
--- tb_cpuv2.vhd: Test bench for CPU
+-- tb_cpuv3.vhd: Test bench for CPU
 --
 -- CprE 381 sample code
 --
@@ -8,20 +8,22 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
 
-entity tb_cpuv2 is
-end tb_cpuv2;
+entity tb_cpuv3 is
+end tb_cpuv3;
 
-architecture behavior of tb_cpuv2 is
+architecture behavior of tb_cpuv3 is
 	-- The cpu component
-	component cpuv2 is
-		port(imem_addr  : out m32_word; -- Instruction memory address
-			 inst       : in  m32_word; -- Instruction
-			 dmem_addr  : out m32_word; -- Data memory address
+	component cpuv3 is
+		generic(DATAWIDTH : integer := 32;
+			    A         : integer := 5);
+		port(imem_addr  : out m32_vector(DATAWIDTH - 1 downto 0); -- Instruction memory address
+			 inst       : in  m32_vector(DATAWIDTH - 1 downto 0); -- Instruction
+			 dmem_addr  : out m32_vector(DATAWIDTH - 1 downto 0); -- Data memory address
 			 dmem_read  : out m32_1bit; -- Data memory read?
 			 dmem_write : out m32_1bit; -- Data memory write?
 			 dmem_wmask : out m32_4bits; -- Data memory write mask
-			 dmem_rdata : in  m32_word; -- Data memory read data
-			 dmem_wdata : out m32_word; -- Data memory write data
+			 dmem_rdata : in  m32_vector(DATAWIDTH - 1 downto 0); -- Data memory read data
+			 dmem_wdata : out m32_vector(DATAWIDTH - 1 downto 0); -- Data memory write data
 			 reset      : in  m32_1bit; -- Reset signal
 			 clock      : in  m32_1bit); -- System clock
 	end component;
@@ -54,7 +56,7 @@ architecture behavior of tb_cpuv2 is
 
 begin
 	-- The CPU
-	CPU1 : cpuv2
+	CPU1 : cpuv3
 		port map(imem_addr  => imem_addr,
 			     inst       => inst,
 			     dmem_addr  => dmem_addr,
@@ -69,7 +71,7 @@ begin
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2a/imem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2b/imem_sort.mif")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
@@ -80,7 +82,7 @@ begin
 	-- The data memory. Note that the write mask is hard wired to 1111, and
 	-- both data and q are connected to dmem_data
 	DATA_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2a/dmem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2b/dmem.mif")
 		port map(dmem_addr(9 downto 2),
 			     "1111",
 			     clock,
@@ -120,8 +122,7 @@ begin
 		reset <= '0';
 		wait for CCT;
 
-		-- Run for five clock cycles
-		wait for 25 * CCT;
+		wait;
 
 		-- Force the simulation to stop
 		assert false report "Simulation ends" severity failure;

@@ -12,8 +12,8 @@ entity ALU_Nbit is
 		 i_C    : in  std_logic;        --Carry In
 		 i_Op   : in  std_logic_vector(2 downto 0); --Operation
 		 o_R    : out std_logic_vector(N - 1 downto 0); --Output Result
-		 o_OF   : out std_logic;       --Overflow Output
-		 o_Zero	: out std_logic);		--Zero Output
+		 o_OF   : out std_logic;        --Overflow Output
+		 o_Zero : out std_logic);       --Zero Output
 
 end ALU_Nbit;
 
@@ -36,22 +36,22 @@ architecture structure of ALU_Nbit is
 			 i_B : in  std_logic;
 			 o_F : out std_logic);
 	end component;
-	
-	component or_Nbit 
-	generic(N : integer := N);
-  		port(i_A          : in std_logic_vector(N - 1 downto 0);
-       		o_F          : out std_logic);
 
-		end component;
-		
-		component inv
-				port(i_A : in std_logic;
-					o_F  : out std_logic);
-			end component;
+	component or_Nbit
+		generic(N : integer := N);
+		port(i_A : in  std_logic_vector(N - 1 downto 0);
+			 o_F : out std_logic);
+
+	end component;
+
+	component inv
+		port(i_A : in  std_logic;
+			 o_F : out std_logic);
+	end component;
 
 	-- Signals
 	signal s_Carry, s_Set : std_logic_vector(N - 1 downto 0) := (others => '0');
-	signal s_Orout :std_logic;
+	signal s_Orout        : std_logic;
 
 begin
 	---------------------------------------------------------
@@ -64,7 +64,7 @@ begin
 			     i_Ainv => i_Ainv,
 			     i_Binv => i_Binv,
 			     i_C    => i_C,
-			     i_L    => s_Set(N-1),
+			     i_L    => s_Set(N - 1),
 			     i_Op   => i_Op,
 			     o_R    => o_R(0),
 			     o_C    => s_Carry(0),
@@ -79,7 +79,7 @@ begin
 				     i_B    => i_B(I),
 				     i_Ainv => i_Ainv,
 				     i_Binv => i_Binv,
-				     i_C    => s_Carry(I-1),
+				     i_C    => s_Carry(I - 1),
 				     i_L    => '0',
 				     i_Op   => i_Op,
 				     o_R    => o_R(I),
@@ -95,18 +95,18 @@ begin
 		port map(i_A => s_Carry(N - 1),
 			     i_B => s_Carry(N - 2),
 			     o_F => o_OF);
-			     
+
 	---------------------------------------------------------
 	--LEVEL 3: OR of all Adder Outputs for zero output	   --
 	---------------------------------------------------------
 
 	ZEROOR : or_Nbit
-		generic map (N => N)
+		generic map(N => N)
 		port map(i_A => s_Set,
 			     o_F => s_OROUT);
-			     
+
 	ZEROINV : inv
-		port map (i_A => s_OROUT,
-					o_F => o_Zero);
+		port map(i_A => s_OROUT,
+			     o_F => o_Zero);
 
 end structure;

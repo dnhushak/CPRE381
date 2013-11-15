@@ -68,10 +68,5 @@ begin
 			     i_B => i_C,
 			     o_D => o_D);
 
-	OrResults : or_Nin
-		generic map(N => 3)
-		port MAP(i_A(0) => s_AandB,
-			     i_A(1) => s_AandC,
-			     i_A(2) => s_BandC,
-			     o_D    => o_C);
+	o_C <= s_AandB or s_AandC or S_BandC;
 end structure;
