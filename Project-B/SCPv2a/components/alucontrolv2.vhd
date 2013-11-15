@@ -28,7 +28,7 @@ begin
 	-- MUX MUX MUX BINV AINV
 	o_alucont <= "00010" when (i_op) = "00" --add
 		else "00110" when (i_op) = "01" -- sub
-		else "00010" when (i_op & i_funct) = "10100000" -- add
+		else "00010" when ((i_op & i_funct) = "10100000" or (i_op & i_funct) = "10001000" or (i_op & i_funct) = "10001001") -- add function (for add, jr, jalr instructions)
 		else "00110" when (i_op & i_funct) = "10100010" -- sub
 		else "00000" when (i_op & i_funct) = "10100100" -- and
 		else "00001" when (i_op & i_funct) = "10100101" -- or

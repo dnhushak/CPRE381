@@ -34,7 +34,7 @@ architecture rom of controlv2 is
 	signal rom : rom_t := (
 		--	      "RAMRMMBBOOJJ
 		0      => "100100001000",       -- R-type instruction (add, sub, and, or, slt)
-		2      => "---00000--10",       -- j
+		2      => "---00000--01",       -- j
 		3      => "---10000--11",       -- jal
 		4      => "-0-000100100",       -- beq
 		5      => "-0-000010100",       -- bne

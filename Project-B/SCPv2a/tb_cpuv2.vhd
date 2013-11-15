@@ -121,7 +121,7 @@ begin
 		wait for CCT;
 
 		-- Run for five clock cycles
-		wait for 20 * CCT;
+		wait for 25 * CCT;
 
 		-- Force the simulation to stop
 		assert false report "Simulation ends" severity failure;

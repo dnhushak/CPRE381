@@ -30,13 +30,13 @@ architecture behavior of ALUv2 is
 begin
 	SLLSHIFTER : barrelshift
 		generic map(N => 31)
-		port map(i_A   => rdata1,
-			     i_S   => rdata2(4 downto 0),
+		port map(i_A   => rdata2,
+			     i_S   => rdata1(4 downto 0),
 			     i_FS  => '0',
 			     i_Ext => '0',
 			     o_F   => shifted);
 
-	P_ALUv2 : process(ALU_code, rdata1, rdata2)
+	P_ALUv2 : process(ALU_code, rdata1, rdata2, shifted)
 		variable a, b, sum, diff, slt : integer;
 	begin
 		-- Pre-calculate arithmetic results
@@ -49,8 +49,6 @@ begin
 		else
 			slt := 0;
 		end if;
-
-		--mult := rdata2 sll to_integer(signed(rdata1));
 
 		-- Select the result, convert to signal if necessary
 		case (ALU_code) is
@@ -73,12 +71,13 @@ begin
 			when others =>              -- Otherwise, make output to be 0
 				r <= (others => '0');
 		end case;
+
 	end process;
 
 	-- Drive the ALUv2 result output
 	result <= r;
 
-	-- Drive the zero output
+	--Drive the zero output
 	with r select zero <=
 		'1' when x"00000000",
 		'0' when others;
