@@ -1,11 +1,11 @@
 proc cpucompile {} {	r
 
 			set library_file_list {
-                           work {Project-B/SCPv2b/cpuv3.vhd
-                           	Project-B/SCPv2b/tb_cpuv3.vhd
-                           	Project-B/SCPv2b/components/alucontrolv3.vhd
-				Project-B/SCPv2b/components/controlv3.vhd
-				Project-B/SCPv2b/components/mem.vhd}
+                           work {Project-B/SCPv3/cpuv3.vhd
+                           	Project-B/SCPv3/tb_cpuv3.vhd
+                           	Project-B/SCPv3/components/alucontrolv3.vhd
+				Project-B/SCPv3/components/controlv3.vhd
+				Project-B/SCPv3/components/mem.vhd}
 			}
 
 
