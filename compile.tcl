@@ -1,43 +1,38 @@
-puts {
-  ModelSimSE general compile script version 1.1
-  Copyright (c) Doulos June 2004, SD
-}
-
 # Simply change the project settings in this section
 # for each new project. There should be no need to
 # modify the rest of the script.
 
 set library_file_list {
                            work {Basic\ Components/mips32.vhd
-                           					Basic\ Components/utils.vhd
-                           					Basic\ Components/Gates/and_2in.vhd
-                           					Basic\ Components/Gates/inv_1bit.vhd
-                           					Basic\ Components/Gates/nand_2in.vhd
-                           					Basic\ Components/Gates/nor_2in.vhd
-                           					Basic\ Components/Gates/or_2in.vhd
-                           					Basic\ Components/Gates/or_Nin.vhd
-                           					Basic\ Components/Gates/xor_2in.vhd
-                           					Basic\ Components/Utility\ Components/mux_1bit_2in.vhd
-                           					Basic\ Components/Utility\ Components/mux_1bit_Min.vhd
-                           					Basic\ Components/Utility\ Components/mux_Nbit_2in.vhd
-                           					Basic\ Components/Utility\ Components/mux_Nbit_Min.vhd
-                           					Basic\ Components/Utility\ Components/decoder_Nbit.vhd
-                           					Basic\ Components/Utility\ Components/extender_Nbit_Mbit.vhd
-                           					Basic\ Components/Utility\ Components/onescomplementer_Nbit.vhd
-                           					Basic\ Components/Utility\ Components/rightshifter_Nbit.vhd
-                           					Basic\ Components/Utility\ Components/leftshifter_Nbit.vhd
-                           					Basic\ Components/ALU\ Components/addersubtracter_Nbit.vhd
-                           					Basic\ Components/ALU\ Components/ALU_1bit.vhd
-                           					Basic\ Components/ALU\ Components/ALU_Nbit.vhd
-                           					Basic\ Components/ALU\ Components/fulladder_1bit.vhd
-                           					Basic\ Components/ALU\ Components/fulladder_Nbit.vhd
-                           					Basic\ Components/Register\ Components/dff.vhd
-                           					Basic\ Components/Register\ Components/register_Nbit.vhd
-                           					Basic\ Components/Register\ Components/registerfile_Nbit_Mreg.vhd}
-                           testbenches   {Basic\ Components/Testbenches/addersubtracter_Nbit_tb.vhd
-                           					Basic\ Components/Testbenches/ALU_Nbit_tb.vhd
-                           					Basic\ Components/Testbenches/extender_Nbit_Mbit_tb.vhd
-                           					Basic\ Components/Testbenches/register_Nbit_tb.vhd}
+                           	Basic\ Components/utils.vhd
+                           	Basic\ Components/Gates/and_2in.vhd
+                           	Basic\ Components/Gates/inv_1bit.vhd
+                           	Basic\ Components/Gates/nand_2in.vhd
+                           	Basic\ Components/Gates/nor_2in.vhd
+                           	Basic\ Components/Gates/or_2in.vhd
+                           	Basic\ Components/Gates/or_Nin.vhd
+                           	Basic\ Components/Gates/xor_2in.vhd
+                           	Basic\ Components/Utility\ Components/mux_1bit_2in.vhd
+                           	Basic\ Components/Utility\ Components/mux_1bit_Min.vhd
+                           	Basic\ Components/Utility\ Components/mux_Nbit_2in.vhd
+                           	Basic\ Components/Utility\ Components/mux_Nbit_Min.vhd
+                           	Basic\ Components/Utility\ Components/decoder_Nbit.vhd
+                           	Basic\ Components/Utility\ Components/extender_Nbit_Mbit.vhd
+                           	Basic\ Components/Utility\ Components/onescomplementer_Nbit.vhd
+                           	Basic\ Components/Utility\ Components/rightshifter_Nbit.vhd
+                           	Basic\ Components/Utility\ Components/leftshifter_Nbit.vhd
+                           	Basic\ Components/ALU\ Components/addersubtracter_Nbit.vhd
+                           	Basic\ Components/ALU\ Components/ALU_1bit.vhd
+                           	Basic\ Components/ALU\ Components/ALU_Nbit.vhd
+                           	Basic\ Components/ALU\ Components/fulladder_1bit.vhd
+                           	Basic\ Components/ALU\ Components/fulladder_Nbit.vhd
+                           	Basic\ Components/Register\ Components/dff.vhd
+                           	Basic\ Components/Register\ Components/register_Nbit.vhd
+                           	Basic\ Components/Register\ Components/registerfile_Nbit_Mreg.vhd
+				Basic\ Components/Testbenches/addersubtracter_Nbit_tb.vhd
+                           	Basic\ Components/Testbenches/ALU_Nbit_tb.vhd
+                           	Basic\ Components/Testbenches/extender_Nbit_Mbit_tb.vhd
+                           	Basic\ Components/Testbenches/register_Nbit_tb.vhd}
 }
 
 
@@ -77,13 +72,5 @@ foreach {library file_list} $library_file_list {
   }
 }
 set last_compile_time $time_now
-
-puts {
-  Script commands are:
-
-  r = Recompile changed and dependent files
- rr = Recompile everything
-  q = Quit without confirmation
-}
 
 
