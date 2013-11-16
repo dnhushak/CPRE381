@@ -39,6 +39,8 @@ begin
 		else "0000110" when (i_op & i_funct) = "000100010" -- sub
 		else "0000000" when (i_op & i_funct) = "000100100" -- and
 		else "0000001" when (i_op & i_funct) = "000100101" -- or
+		else "0010000" when (i_op & i_funct) = "000100110" -- xor
+		else "0001100" when (i_op & i_funct) = "000100111" -- nor
 		else "0000111" when (i_op & i_funct) = "000101010" -- slt
 		else "0110100" when (i_op & i_funct) = "000000000" -- sll
 		else "1010100" when (i_op & i_funct) = "000000010" -- srl
