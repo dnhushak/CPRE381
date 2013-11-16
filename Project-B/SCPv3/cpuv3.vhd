@@ -47,7 +47,9 @@ architecture structure of cpuv3 is
 			 branch     : out m32_2bits;
 			 alu_op     : out m32_2bits;
 			 jump       : out m32_1bit;
-			 jal        : out m32_1bit);
+			 jal        : out m32_1bit;
+			 upper      : out m32_1bit;
+			 signedload : out m32_1bit);
 	end component;
 
 	component fulladder_Nbit is
@@ -119,15 +121,15 @@ architecture structure of cpuv3 is
 	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(DATAWIDTH - 1 downto 0);
 
 	-- Control signals
-	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect : m32_1bit;
-	signal aluop, branch                                                                                                                  : m32_2bits;
-	signal s_alucontrol                                                                                                                   : m32_vector(6 downto 0);
-	signal s_reset                                                                                                                        : m32_vector(DATAWIDTH - 1 downto 0);
-	signal s_alumux                                                                                                                       : m32_vector(2 downto 0);
+	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect, upperselect, signedloadselect : m32_1bit;
+	signal aluop, branch                                                                                                                                                 : m32_2bits;
+	signal s_alucontrol                                                                                                                                                  : m32_vector(6 downto 0);
+	signal s_reset                                                                                                                                                       : m32_vector(DATAWIDTH - 1 downto 0);
+	signal s_alumux                                                                                                                                                      : m32_vector(2 downto 0);
 
 	--Data
-	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback : m32_vector(DATAWIDTH - 1 downto 0);
-	signal writemux, regwritedst                                                                                   : m32_5bits;
+	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0);
+	signal writemux, regwritedst                                                                                                             : m32_5bits;
 
 	--Clock
 	signal CLK : m32_logic;
@@ -220,6 +222,24 @@ begin
 			     o_OF    => open,
 			     o_Zero  => zero);
 
+	-- This is for lui - shifts instruction 15 -> 0 left by 16
+	UPPERLOADER : leftshifter_Nbit
+		generic map(N => DATAWIDTH,
+			        A => A)
+		port map(i_A                     => instruction(15 downto 0),
+			     c_Shamt(A - 1)          => '1',
+			     c_Shamt(A - 2 downto 0) => (others => '0'),
+			     o_D                     => loadupper);
+
+	-- Switch between the left-shifted immediate (for lui) or the extended immediate
+	LOADUPPERSWITCHER : mux_Nbit_2in
+		generic map(N => DATAWIDTH)
+		port map(i_A => extended,
+			     i_B => loadupper,
+			     c_S => upperselect,
+			     o_D => loadimmediate);
+
+	-- Switch between register read 1 output or the shift amount in instruction for input A of ALU
 	ALUSWITCHER1 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
 		port map(c_S => shiftselect,
@@ -227,17 +247,18 @@ begin
 			     i_B => shamt,
 			     o_D => alumux1);
 
+	-- Switch between register read 2 output or the immediate value for input B of ALU
 	ALUSWITCHER2 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
 		port map(c_S => alusrc,
 			     i_A => read2,
-			     i_B => extended,
+			     i_B => loadimmediate,
 			     o_D => alumux2);
 
 	-- Extension is for branching and immediate loading into ALUv2
 	EXTENSION : extender_Nbit_Mbit
 		generic map(N => 16, M => DATAWIDTH)
-		port map(c_Ext => '1',
+		port map(c_Ext => signedloadselect,
 			     i_A   => instruction(15 downto 0),
 			     o_D   => extended);
 
@@ -262,7 +283,9 @@ begin
 			                        branch     => branch,
 			                        alu_op     => aluop,
 			                        jump       => jump,
-			                        jal        => jalselect);
+			                        jal        => jalselect,
+			                        upper      => upperselect,
+			                        signedload => signedloadselect);
 
 	-----------------------------------------------------------
 	--Memory I/O
