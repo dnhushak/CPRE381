@@ -1,29 +1,12 @@
--- control.vhd: CprE 381 F13 template file
--- 
--- The main control unit of MIPS
--- 
--- Note: This is a partial example, with nine control signals (no Jump
--- singal)
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use work.mips32.all;
+use work.cpurecords.all;
 
 entity controlv3 is
-	port(op_code      : in  m32_6bits;
-		 reg_dst      : out m32_1bit;
-		 alu_src      : out m32_1bit;
-		 mem_to_reg   : out m32_1bit;
-		 reg_write    : out m32_1bit;
-		 mem_read     : out m32_1bit;
-		 mem_write    : out m32_1bit;
-		 branch       : out m32_2bits;
-		 alu_op       : out m32_3bits;
-		 jump         : out m32_1bit;
-		 jal          : out m32_1bit;
-		 upper        : out m32_1bit;
-		 signedload : out m32_1bit);
+	port(op_code       : in  m32_6bits;
+		 o_control_out : out m32_control_out);
 end controlv3;
 
 architecture rom of controlv3 is
@@ -32,7 +15,7 @@ architecture rom of controlv3 is
 
 	-- The ROM content
 	-- Format: reg_dst, alu_src, mem_to_reg, reg_write, mem_read, 
-	-- mem_write, branch,alu_op(2) alu_op(1), alu_op(0), jal, jump, upper, signedload
+	-- mem_write, branch(eq, ne),alu_op(2) alu_op(1), alu_op(0), jal, jump, upper, signedload
 	signal rom : rom_t := (
 		--	      "RAMRMMBBOOOJJUU
 		0      => "100100000000001",    -- R-type instruction (add, sub, and, or, slt)
@@ -54,20 +37,20 @@ architecture rom of controlv3 is
 		others => "000000000000000");
 
 begin
-	(reg_dst,
-		alu_src,
-		mem_to_reg,
-		reg_write,
-		mem_read,
-		mem_write,
-		branch(0),
-		branch(1),
-		alu_op(2),
-		alu_op(1),
-		alu_op(0),
-		jal,
-		jump,
-		upper,
-		signedload) <= rom(to_integer(unsigned(op_code)));
+		(o_control_out.reg_dst,
+			o_control_out.alu_src,
+			o_control_out.mem_to_reg,
+			o_control_out.reg_write,
+			o_control_out.mem_read,
+			o_control_out.mem_write,
+			o_control_out.branch(0),
+			o_control_out.branch(1),
+			o_control_out.alu_op(2),
+			o_control_out.alu_op(1),
+			o_control_out.alu_op(0),
+			o_control_out.jal,
+			o_control_out.jump,
+			o_control_out.upper,
+			o_control_out.signedload) <= rom(to_integer(unsigned(op_code)));
 end rom;
 

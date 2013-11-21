@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
+use work.cpurecords.all;
 
 entity cpuv3 is
 	-- Use N to change the global bit width of the CPU, A should change with it such that 2^A = N
@@ -37,19 +38,8 @@ architecture structure of cpuv3 is
 	end component;
 
 	component controlv3 is
-		port(op_code    : in  m32_6bits;
-			 reg_dst    : out m32_1bit;
-			 alu_src    : out m32_1bit;
-			 mem_to_reg : out m32_1bit;
-			 reg_write  : out m32_1bit;
-			 mem_read   : out m32_1bit;
-			 mem_write  : out m32_1bit;
-			 branch     : out m32_2bits;
-			 alu_op     : out m32_3bits;
-			 jump       : out m32_1bit;
-			 jal        : out m32_1bit;
-			 upper      : out m32_1bit;
-			 signedload : out m32_1bit);
+		port(op_code       : in  m32_6bits;
+			 o_control_out : out m32_control_out);
 	end component;
 
 	component fulladder_Nbit is
@@ -87,9 +77,7 @@ architecture structure of cpuv3 is
 	component alucontrolv3 is
 		port(i_op      : in  m32_3bits; -- ALUv2op out of control
 			 i_funct   : in  m32_6bits; -- Bits 0-5 of the instruction word
-			 o_jr      : out m32_1bit;  -- JR Control signal (Has to be handled here because JR is an R type instruction
-			 o_shift   : out m32_1bit;  --select input A to be shamt
-			 o_alucont : out m32_vector(6 downto 0)); -- Output that determines ALUv2 operation
+			 o_alucont : out m32_alucontrol_out); -- Output that determines ALUv2 operation
 	end component;
 
 	component mux_Nbit_2in is
@@ -121,13 +109,12 @@ architecture structure of cpuv3 is
 	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(DATAWIDTH - 1 downto 0);
 
 	-- Control signals
-	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect, upperselect, signedloadselect : m32_1bit;
-	signal branch                                                                                                                                                        : m32_2bits;
-	signal aluop                                                                                                                                                         : m32_3bits;
-	signal s_alucontrol                                                                                                                                                  : m32_vector(6 downto 0);
-	signal s_reset, s_upperload                                                                                                                                          : m32_vector(DATAWIDTH - 1 downto 0);
-	signal s_alumux                                                                                                                                                      : m32_vector(2 downto 0);
-	signal s_leftshift                                                                                                                                                   : m32_vector(A - 1 downto 0);
+	signal zero, one, takebranch, bne, beq : m32_1bit := '0';
+	signal s_reset, s_upperload            : m32_vector(DATAWIDTH - 1 downto 0);
+	signal s_alumux                        : m32_vector(2 downto 0) := "000";
+	signal s_leftshift                     : m32_vector(A - 1 downto 0);
+	signal s_alucontrol_out                : m32_alucontrol_out;
+	signal s_control_out                   : m32_control_out;
 
 	--Data
 	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0);
@@ -157,7 +144,7 @@ begin
 
 	WRITESWITCHER : mux_Nbit_2in
 		generic map(N => 5)
-		port map(c_S => regdst,
+		port map(c_S => s_control_out.reg_dst,
 			     i_A => instruction(20 downto 16),
 			     i_B => instruction(15 downto 11),
 			     o_D => writemux);
@@ -165,7 +152,7 @@ begin
 	-- Write to return address register ($31 or $ra) for jal
 	JALSWITCHER : mux_Nbit_2in
 		generic map(N => 5)
-		port map(c_S => jalselect,
+		port map(c_S => s_control_out.jal,
 			     i_A => writemux,
 			     i_B => "11111",
 			     o_D => regwritedst);
@@ -173,7 +160,7 @@ begin
 	-- Select return address for writing for jalselect
 	WADDRESSSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => jalselect,
+		port map(c_S => s_control_out.jal,
 			     i_A => writeback,
 			     i_B => PCPlus4,
 			     o_D => registerwrite);
@@ -194,7 +181,7 @@ begin
 			     i_A   => registerwrite,
 			     o_D1o => read1,
 			     o_D2o => read2,
-			     c_WE  => regwrite,
+			     c_WE  => s_control_out.reg_write,
 			     c_RST => s_reset,
 			     c_CLK => CLK);
 
@@ -210,24 +197,23 @@ begin
 			     o_D   => shamt);
 
 	-- ALU Op is: Shift(1), Shift(0), Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
-
-	s_alumux <= s_alucontrol(4) & s_alucontrol(1 downto 0);
+	s_alumux <= s_alucontrol_out.alucont(4) & s_alucontrol_out.alucont(1 downto 0);
 	MASTERALUv2 : ALU_Nbit
 		generic map(N => DATAWIDTH)
 		port map(i_A     => alumux1,
 			     i_B     => alumux2,
-			     i_Ainv  => s_alucontrol(3),
-			     i_Binv  => s_alucontrol(2),
-			     i_C     => s_alucontrol(2),
+			     i_Ainv  => s_alucontrol_out.alucont(3),
+			     i_Binv  => s_alucontrol_out.alucont(2),
+			     i_C     => s_alucontrol_out.alucont(2),
 			     c_Op    => s_alumux,
-			     c_Shift => s_alucontrol(6 downto 5),
+			     c_Shift => s_alucontrol_out.alucont(6 downto 5),
 			     o_D     => aluresult,
 			     o_OF    => open,
 			     o_Zero  => zero);
 
-	s_leftshift(A - 1)           <= '1';
-	s_leftshift(A - 2 downto 0)  <= (others => '0');
-	s_upperload(15 downto 0)     <= instruction(15 downto 0);
+	s_leftshift(A - 1)                   <= '1';
+	s_leftshift(A - 2 downto 0)          <= (others => '0');
+	s_upperload(15 downto 0)             <= instruction(15 downto 0);
 	s_upperload(DATAWIDTH - 1 downto 15) <= (others => '0');
 	-- This is for lui - shifts instruction 15 -> 0 left by 16
 	UPPERLOADER : leftshifter_Nbit
@@ -242,13 +228,13 @@ begin
 		generic map(N => DATAWIDTH)
 		port map(i_A => extended,
 			     i_B => loadupper,
-			     c_S => upperselect,
+			     c_S => s_control_out.upper,
 			     o_D => loadimmediate);
 
 	-- Switch between register read 1 output or the shift amount in instruction for input A of ALU
 	ALUSWITCHER1 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => shiftselect,
+		port map(c_S => s_alucontrol_out.shift,
 			     i_A => read1,
 			     i_B => shamt,
 			     o_D => alumux1);
@@ -256,7 +242,7 @@ begin
 	-- Switch between register read 2 output or the immediate value for input B of ALU
 	ALUSWITCHER2 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => alusrc,
+		port map(c_S => s_control_out.alu_src,
 			     i_A => read2,
 			     i_B => loadimmediate,
 			     o_D => alumux2);
@@ -264,34 +250,21 @@ begin
 	-- Extension is for branching and immediate loading into ALUv2
 	EXTENSION : extender_Nbit_Mbit
 		generic map(N => 16, M => DATAWIDTH)
-		port map(c_Ext => signedloadselect,
+		port map(c_Ext => s_control_out.signedload,
 			     i_A   => instruction(15 downto 0),
 			     o_D   => extended);
 
 	ALUCONTROLLER : alucontrolv3
-		port map(i_op      => aluop,
+		port map(i_op      => s_control_out.alu_op,
 			     i_funct   => instruction(5 downto 0),
-			     o_jr      => jrselect,
-			     o_shift   => shiftselect,
-			     o_alucont => s_alucontrol);
+			     o_alucont => s_alucontrol_out);
 
 	-----------------------------------------------------------
 	--Control I/O
 	-----------------------------------------------------------   
 
-	CONTROLLER : controlv3 port map(op_code    => instruction(31 downto 26),
-			                        reg_dst    => regdst,
-			                        alu_src    => alusrc,
-			                        mem_to_reg => memtoreg,
-			                        reg_write  => regwrite,
-			                        mem_read   => memread,
-			                        mem_write  => memwrite,
-			                        branch     => branch,
-			                        alu_op     => aluop,
-			                        jump       => jump,
-			                        jal        => jalselect,
-			                        upper      => upperselect,
-			                        signedload => signedloadselect);
+	CONTROLLER : controlv3 port map(op_code       => instruction(31 downto 26),
+			                        o_control_out => s_control_out);
 
 	-----------------------------------------------------------
 	--Memory I/O
@@ -299,8 +272,8 @@ begin
 
 	-------FIX BYTE VS WORD ADDRESS------
 	dmem_addr      <= aluresult;
-	dmem_read      <= memread;
-	dmem_write     <= memwrite;
+	dmem_read      <= s_control_out.mem_read;
+	dmem_write     <= s_control_out.mem_write;
 	dmem_wmask     <= "1111";           -- Data memory write mask
 	memorydataread <= dmem_rdata;
 	dmem_wdata     <= read2;
@@ -310,7 +283,7 @@ begin
 	-----------------------------------------------------------   
 	WRITEBACKSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => memtoreg,
+		port map(c_S => s_control_out.mem_to_reg,
 			     i_A => aluresult,
 			     i_B => memorydataread,
 			     o_D => writeback);
@@ -345,9 +318,9 @@ begin
 			     o_C => open);
 
 	--AND branch and zero for BEQ, AND branch and not(zero) for bne
-	beq        <= branch(0) and zero;
+	beq        <= s_control_out.branch(0) and zero;
 	one        <= not zero;
-	bne        <= branch(1) and one;
+	bne        <= s_control_out.branch(1) and one;
 	takebranch <= beq or bne;
 
 	--Switch between PC + 4 and branch address (the result here called nojumpaddress)
@@ -372,7 +345,7 @@ begin
 	--Switch between jump address and non-jump address
 	JUMPSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => jump,
+		port map(c_S => s_control_out.jump,
 			     i_A => nojumpaddress,
 			     i_B => jumpaddress,
 			     o_D => jumporbranch);
@@ -380,7 +353,7 @@ begin
 	--Switch between previous addresses or register address for jump
 	JRSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => jrselect,
+		port map(c_S => s_alucontrol_out.jr,
 			     i_A => jumporbranch,
 			     i_B => aluresult,
 			     o_D => PCUpdate);

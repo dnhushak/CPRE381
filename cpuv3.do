@@ -28,20 +28,9 @@ add wave -noupdate -height 15 -group {Register I/O} -format Literal -height 15 -
 add wave -noupdate -height 15 -group {Register I/O} -format Literal -height 15 -label {Read 2 Address} /tb_cpuv3/cpu1/registers/i_r2a
 add wave -noupdate -height 15 -group {Register I/O} -format Literal -height 15 -label {Read 2 Data} -radix hexadecimal /tb_cpuv3/cpu1/registers/o_d2o
 add wave -noupdate -divider -height 25 {Control Signals}
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Literal -height 15 -label {Instruction Opcode} /tb_cpuv3/cpu1/controller/op_code
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Literal -height 15 -label {ALU OpCode} /tb_cpuv3/cpu1/alucontroller/o_alucont
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {JR Select} /tb_cpuv3/cpu1/alucontroller/o_jr
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Shift Select} /tb_cpuv3/cpu1/alucontroller/o_shift
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Reg Dst} /tb_cpuv3/cpu1/controller/reg_dst
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {ALU Src} /tb_cpuv3/cpu1/controller/alu_src
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Mem to Reg} /tb_cpuv3/cpu1/controller/mem_to_reg
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Reg Write} /tb_cpuv3/cpu1/controller/reg_write
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Mem Read} /tb_cpuv3/cpu1/controller/mem_read
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Mem Write} /tb_cpuv3/cpu1/controller/mem_write
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Literal -height 15 -label {Branch Select} /tb_cpuv3/cpu1/controller/branch
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Literal -height 15 -label {ALU Controller Opcode} /tb_cpuv3/cpu1/controller/alu_op
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {Jump Select} /tb_cpuv3/cpu1/controller/jump
-add wave -noupdate -height 15 -group {Control Signals} -color Orange -format Logic -height 15 -label {JAL Select} /tb_cpuv3/cpu1/controller/jal
+add wave -noupdate -height 15 -expand -group {Control Signals} -color Orange -format Literal -height 15 -label {Controller Outputs} -expand /tb_cpuv3/cpu1/s_control_out
+add wave -noupdate -height 15 -expand -group {Control Signals} -color Orange -format Literal -height 15 -label {Instruction Opcode} /tb_cpuv3/cpu1/controller/op_code
+add wave -noupdate -height 15 -expand -group {Control Signals} -color Orange -format Literal -height 15 -label {ALU OpCode} /tb_cpuv3/cpu1/alucontroller/o_alucont
 add wave -noupdate -divider -height 25 {ALU Signals}
 add wave -noupdate -height 15 -group {ALU Signals} -color Yellow -format Literal -height 15 -label {In A} -radix hexadecimal /tb_cpuv3/cpu1/masteraluv2/i_a
 add wave -noupdate -height 15 -group {ALU Signals} -color Yellow -format Literal -height 15 -label {In B} -radix hexadecimal /tb_cpuv3/cpu1/masteraluv2/i_b
@@ -55,9 +44,9 @@ add wave -noupdate -format Literal -height 15 -label {Memory Write Mask} /tb_cpu
 add wave -noupdate -format Literal -height 15 -label {Memory Read Data} -radix hexadecimal /tb_cpuv3/cpu1/dmem_rdata
 add wave -noupdate -format Literal -height 15 -label {Memory Write Data} -radix hexadecimal /tb_cpuv3/cpu1/dmem_wdata
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {891 ns} 0}
-configure wave -namecolwidth 375
-configure wave -valuecolwidth 345
+WaveRestoreCursors {{Cursor 1} {4608 ns} 0}
+configure wave -namecolwidth 264
+configure wave -valuecolwidth 260
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -70,4 +59,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {977 ns} {2802 ns}
+WaveRestoreZoom {4608 ns} {19974 ns}
