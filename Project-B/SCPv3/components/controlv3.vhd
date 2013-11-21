@@ -27,7 +27,7 @@ entity controlv3 is
 end controlv3;
 
 architecture rom of controlv3 is
-	subtype code_t is m32_vector(12 downto 0);
+	subtype code_t is m32_vector(14 downto 0);
 	type rom_t is array (0 to 63) of code_t;
 
 	-- The ROM content
@@ -62,7 +62,7 @@ begin
 		mem_write,
 		branch(0),
 		branch(1),
-		alu_op(3),
+		alu_op(2),
 		alu_op(1),
 		alu_op(0),
 		jal,

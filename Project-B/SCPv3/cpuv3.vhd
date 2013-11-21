@@ -45,7 +45,7 @@ architecture structure of cpuv3 is
 			 mem_read   : out m32_1bit;
 			 mem_write  : out m32_1bit;
 			 branch     : out m32_2bits;
-			 alu_op     : out m32_2bits;
+			 alu_op     : out m32_3bits;
 			 jump       : out m32_1bit;
 			 jal        : out m32_1bit;
 			 upper      : out m32_1bit;
@@ -85,7 +85,7 @@ architecture structure of cpuv3 is
 	end component;
 
 	component alucontrolv3 is
-		port(i_op      : in  m32_2bits; -- ALUv2op out of control
+		port(i_op      : in  m32_3bits; -- ALUv2op out of control
 			 i_funct   : in  m32_6bits; -- Bits 0-5 of the instruction word
 			 o_jr      : out m32_1bit;  -- JR Control signal (Has to be handled here because JR is an R type instruction
 			 o_shift   : out m32_1bit;  --select input A to be shamt
@@ -122,10 +122,12 @@ architecture structure of cpuv3 is
 
 	-- Control signals
 	signal regdst, jump, memread, memtoreg, memwrite, alusrc, regwrite, zero, beq, one, bne, takebranch, jalselect, jrselect, shiftselect, upperselect, signedloadselect : m32_1bit;
-	signal aluop, branch                                                                                                                                                 : m32_2bits;
+	signal branch                                                                                                                                                        : m32_2bits;
+	signal aluop                                                                                                                                                         : m32_3bits;
 	signal s_alucontrol                                                                                                                                                  : m32_vector(6 downto 0);
-	signal s_reset                                                                                                                                                       : m32_vector(DATAWIDTH - 1 downto 0);
+	signal s_reset, s_upperload                                                                                                                                          : m32_vector(DATAWIDTH - 1 downto 0);
 	signal s_alumux                                                                                                                                                      : m32_vector(2 downto 0);
+	signal s_leftshift                                                                                                                                                   : m32_vector(A - 1 downto 0);
 
 	--Data
 	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0);
@@ -208,6 +210,7 @@ begin
 			     o_D   => shamt);
 
 	-- ALU Op is: Shift(1), Shift(0), Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
+
 	s_alumux <= s_alucontrol(4) & s_alucontrol(1 downto 0);
 	MASTERALUv2 : ALU_Nbit
 		generic map(N => DATAWIDTH)
@@ -222,14 +225,17 @@ begin
 			     o_OF    => open,
 			     o_Zero  => zero);
 
+	s_leftshift(A - 1)           <= '1';
+	s_leftshift(A - 2 downto 0)  <= (others => '0');
+	s_upperload(15 downto 0)     <= instruction(15 downto 0);
+	s_upperload(DATAWIDTH - 1 downto 15) <= (others => '0');
 	-- This is for lui - shifts instruction 15 -> 0 left by 16
 	UPPERLOADER : leftshifter_Nbit
 		generic map(N => DATAWIDTH,
 			        A => A)
-		port map(i_A                     => instruction(15 downto 0),
-			     c_Shamt(A - 1)          => '1',
-			     c_Shamt(A - 2 downto 0) => (others => '0'),
-			     o_D                     => loadupper);
+		port map(i_A     => s_upperload,
+			     c_Shamt => s_leftshift,
+			     o_D     => loadupper);
 
 	-- Switch between the left-shifted immediate (for lui) or the extended immediate
 	LOADUPPERSWITCHER : mux_Nbit_2in
