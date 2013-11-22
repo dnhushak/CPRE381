@@ -214,7 +214,7 @@ begin
 	s_leftshift(A - 1)                   <= '1';
 	s_leftshift(A - 2 downto 0)          <= (others => '0');
 	s_upperload(15 downto 0)             <= instruction(15 downto 0);
-	s_upperload(DATAWIDTH - 1 downto 15) <= (others => '0');
+	s_upperload(DATAWIDTH - 1 downto 16) <= (others => '0');
 	-- This is for lui - shifts instruction 15 -> 0 left by 16
 	UPPERLOADER : leftshifter_Nbit
 		generic map(N => DATAWIDTH,
