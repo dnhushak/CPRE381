@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity addersubtractor_Nbit is
-	generic(N : integer := 2);
+	generic(N : integer := 32);
 	port(i_A   : in  std_logic_vector(N - 1 downto 0);
 		 i_B   : in  std_logic_vector(N - 1 downto 0);
 		 c_Sub : in  std_logic;

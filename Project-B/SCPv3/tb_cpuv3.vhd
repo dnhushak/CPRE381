@@ -42,17 +42,24 @@ architecture behavior of tb_cpuv3 is
 			q       : out m32_word);
 	end component;
 
+	component instruction_decoder
+		port(i_instr_bit : in  m32_word;
+			 c_clk       : in  m32_1bit;
+			 o_instr_str : out string);
+	end component instruction_decoder;
+
 	-- The signals connected to CPU and memories
-	signal imem_addr  : m32_word  := (others => '0'); -- Instruction memory address
-	signal inst       : m32_word  := (others => '0'); -- Instruction
-	signal dmem_addr  : m32_word  := (others => '0'); -- Data memory address
-	signal dmem_read  : m32_1bit  := '0'; -- Data memory read?
-	signal dmem_write : m32_1bit  := '0'; -- Data memory write?
-	signal dmem_wmask : m32_4bits := (others => '0'); -- Data memory write mask
-	signal dmem_rdata : m32_word  := (others => '0'); -- Data memory read data
-	signal dmem_wdata : m32_word  := (others => '0'); -- Data memory write data
-	signal reset      : m32_1bit  := '0'; -- Reset signal
-	signal clock      : m32_1bit  := '0'; -- System clock
+	signal imem_addr   : m32_word  := (others => '0'); -- Instruction memory address
+	signal inst        : m32_word  := (others => '0'); -- Instruction
+	signal dmem_addr   : m32_word  := (others => '0'); -- Data memory address
+	signal dmem_read   : m32_1bit  := '0'; -- Data memory read?
+	signal dmem_write  : m32_1bit  := '0'; -- Data memory write?
+	signal dmem_wmask  : m32_4bits := (others => '0'); -- Data memory write mask
+	signal dmem_rdata  : m32_word  := (others => '0'); -- Data memory read data
+	signal dmem_wdata  : m32_word  := (others => '0'); -- Data memory write data
+	signal reset       : m32_1bit  := '0'; -- Reset signal
+	signal clock       : m32_1bit  := '0'; -- System clock
+	signal inst_string : string(1 to 30);
 
 begin
 	-- The CPU
@@ -67,6 +74,11 @@ begin
 			     dmem_wdata => dmem_wdata,
 			     reset      => reset,
 			     clock      => clock);
+
+	INST_DECODER : instruction_decoder
+		port map(i_instr_bit => inst,
+			     c_clk       => clock,
+			     o_instr_str => inst_string);
 
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
@@ -105,7 +117,7 @@ begin
 		wait for HCT * 4 / 5;
 
 		-- Debug: Print all signal values right before the rising edge
-		report integer'image(cycle) & " " & hex(imem_addr) & " " & hex(inst) & " " & hex(dmem_addr) & " " & hex(dmem_rdata) & " " & hex(dmem_wdata);
+		-- report integer'image(cycle) & "  " & inst_string & " " & hex(imem_addr) & " " & hex(inst) & " " & hex(dmem_addr) & " " & hex(dmem_rdata) & " " & hex(dmem_wdata);
 		cycle := cycle + 1;
 		wait for HCT * 1 / 5;
 	end process;
@@ -120,12 +132,7 @@ begin
 		reset <= '1';
 		wait for CCT;
 		reset <= '0';
-		wait for CCT;
-
 		wait;
-
-		-- Force the simulation to stop
-		assert false report "Simulation ends" severity failure;
 	end process;
 
 end behavior;

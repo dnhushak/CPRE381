@@ -106,19 +106,19 @@ architecture structure of cpuv3 is
 	end component;
 
 	-- PC Signals
-	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(DATAWIDTH - 1 downto 0);
+	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
 
 	-- Control signals
-	signal zero, one, takebranch, bne, beq : m32_1bit := '0';
-	signal s_reset, s_upperload            : m32_vector(DATAWIDTH - 1 downto 0);
-	signal s_alumux                        : m32_vector(2 downto 0) := "000";
-	signal s_leftshift                     : m32_vector(A - 1 downto 0);
+	signal zero, one, takebranch, bne, beq : m32_1bit                           := '0';
+	signal s_reset, s_upperload            : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal s_alumux                        : m32_vector(2 downto 0)             := "000";
+	signal s_leftshift                     : m32_vector(A - 1 downto 0)         := (others => '0');
 	signal s_alucontrol_out                : m32_alucontrol_out;
 	signal s_control_out                   : m32_control_out;
 
 	--Data
-	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0);
-	signal writemux, regwritedst                                                                                                             : m32_5bits;
+	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal writemux, regwritedst                                                                                                             : m32_5bits                          := (others => '0');
 
 	--Clock
 	signal CLK : m32_logic;

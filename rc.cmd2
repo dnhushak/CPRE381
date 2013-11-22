@@ -1,0 +1,99 @@
+# Cadence Encounter(R) RTL Compiler
+#   version v12.10-s012_1 (64-bit) built Jan 26 2013
+#
+# Run with the following arguments:
+#   -logfile rc.log
+#   -cmdfile rc.cmd
+
+load Basic-Components/ALU-Components/ALU_1bit.vhd -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/ALU-Components/ALU_1bit.vhd -vhdl
+elaborate ALU_1bit
+set OUTPUT_DIR ./rundir
+set_attribute lib_search_path ../libdir 
+set_attribute lib_search_path ../CommonFiles/libdir
+set_attribute library {osu05_stdcells.lib} 
+elaborate ALU_1bit
+cd Basic-Components
+help
+shell cd Basic-Components
+shell ls
+load Basic-Components/Gates/and2in.vhd -vhdl
+load Basic-Components/Gates/and_2in.vhd -vhdl
+load Basic-Components/Gates/or_2in.vhd -vhdl
+load Basic-Components/Gates/nand_2in.vhd -vhdl
+load Basic-Components/Gates/xor_2in.vhd -vhdl
+load Basic-Components/Gates/inv_1bit.vhd -vhdl
+load Basic-Components/Gates/nor_2in.vhd -vhdl
+load Basic-Components/Gates/or_Nin.vhd -vhdl
+ls
+cd /designs/
+ls
+cd ..
+ls
+cd /models 
+ls
+cd ..
+elaborate and_2in
+ls
+cd /designs/
+ls
+rm /designs/and_2in/
+cd ..
+elaborate ALU_1bit
+load Basic-Components/Utility-Components/mux_1bit_Min.vhd -vhdl
+load Basic-components/utils.vhd -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/Utility-Components/mux_1bit_Min.vhd -vhdl
+elaborate mux_1bit_Min
+cd /designs/
+ls
+rm /designs/ALU_1bit/
+rm /designs/mux_1bit_Min/
+ls
+elaborate ALU_1bit
+load Basic-Components/ALU-Components/ALU-1bit.vhd -vhdl
+load Basic-Components/ALU-Components/ALU-1bit.vhd -vhdl
+cd ..
+load Basic-Components/ALU-Components/ALU-1bit.vhd -vhdl
+load Basic-Components/ALU-Components/ALU_1bit.vhd -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/ALU-Components/ALU_1bit.vhd -vhdl
+elaborate ALU_1bit
+help
+man elaborate
+elaborate -libpath {Basic-Components/Gates/} -libext {".vhd"} -vhdl ALU_1bit
+elaborate -libpath {Basic-Components/Gates/} -libext {".vhd"} ALU_1bit -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/ALU-Components/ALU_1bit.vhd -vhdl
+elaborate -libpath {Basic-Components/Gates/} -libext {".vhd"} ALU_1bit -vhdl
+elaborate -libpath { Basic-Components/Gates/ } -libext {".vhd"} ALU_1bit -vhdl
+man elaborate
+load /Project-B/SCPv3/cpu3.vhd -vhdl
+load /Project-B/SCPv3/cpuv3.vhd -vhdl
+load Project-B/SCPv3/cpuv3.vhd -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/mips32.vhd -vhdl
+load Project-B/SCPv3/components/cpurecords.vhd -vhdl
+load Project-B/SCPv3/cpuv3.vhd -vhdl
+elaborate cpuv3
+load Basic-Components/Utility-Components/decoder_Nbit.vhd -vhdl
+load Basic-Components/utils.vhd -vhdl
+load Basic-Components/Utility-Components/decoder_Nbit.vhd -vhdl
+elaborate decoder_Nbit
+rm cpuv3
+ls
+cd /designs/
+ls
+rm ALU_1bit ALU_1bit1
+rm ALU_1bit
+rm ALU_1bit_1
+rm decoder_Nbit
+ls
+cd ..
+ls
+cd designs
+ls
+cd ..
+elaborate cpuv3
+synthesize

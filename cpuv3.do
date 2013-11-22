@@ -4,6 +4,7 @@ add wave -noupdate -divider -height 25 {Signals of Note}
 add wave -noupdate -color White -format Logic -height 15 -label Clock /tb_cpuv3/clock
 add wave -noupdate -color {Blue Violet} -format Literal -height 15 -label {PC Address} -radix decimal /tb_cpuv3/imem_addr
 add wave -noupdate -color Magenta -format Literal -height 15 -itemcolor {Green Yellow} -label Instruction /tb_cpuv3/inst
+add wave -noupdate -format Literal -height 15 -itemcolor Orange -label {Instruction String} /tb_cpuv3/inst_string
 add wave -noupdate -color Yellow -format Literal -height 15 -label {ALU Result} -radix hexadecimal /tb_cpuv3/cpu1/masteraluv2/o_d
 add wave -noupdate -color Yellow -format Logic -height 15 -label {ALU OF Output} /tb_cpuv3/cpu1/masteraluv2/o_of
 add wave -noupdate -color Yellow -format Logic -height 15 -label {ALU Zero Result} /tb_cpuv3/cpu1/masteraluv2/o_zero
@@ -44,7 +45,7 @@ add wave -noupdate -format Literal -height 15 -label {Memory Write Mask} /tb_cpu
 add wave -noupdate -format Literal -height 15 -label {Memory Read Data} -radix hexadecimal /tb_cpuv3/cpu1/dmem_rdata
 add wave -noupdate -format Literal -height 15 -label {Memory Write Data} -radix hexadecimal /tb_cpuv3/cpu1/dmem_wdata
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {4608 ns} 0}
+WaveRestoreCursors {{Cursor 1} {24760 ns} 0}
 configure wave -namecolwidth 264
 configure wave -valuecolwidth 260
 configure wave -justifyvalue left
@@ -59,4 +60,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {4608 ns} {19974 ns}
+WaveRestoreZoom {5658 ns} {31282 ns}

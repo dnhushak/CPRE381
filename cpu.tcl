@@ -2,6 +2,7 @@ proc cpucompile {} {	r
 
 			set library_file_list {
                            work {Project-B/SCPv3/components/cpurecords.vhd
+                           		Project-B/SCPv3/components/instruction_decoder.vhd
                            		Project-B/SCPv3/components/alucontrolv3.vhd
 								Project-B/SCPv3/components/controlv3.vhd
 								Project-B/SCPv3/components/mem.vhd

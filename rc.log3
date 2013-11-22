@@ -1,0 +1,749 @@
+Checking out license 'RTL_Compiler_Ultra'... (1 second elapsed)
+Finished loading tool scripts (10 seconds elapsed)
+
+                                                                                     Cadence Encounter(R) RTL Compiler
+                                                                             Version v12.10-s012_1 (64-bit), built Jan 26 2013
+
+
+Copyright notice: Copyright 1997-2012 Cadence Design Systems, Inc. All rights reserved worldwide. 
+
+WARNING: This version of RC is 299 days old.
+         Visit downloads.cadence.com for the latest release of RC.
+
+
+============================================================================================================================================================================================================
+                                                                                Welcome to Cadence Encounter(R) RTL Compiler
+
+Notice: Upcoming end of support for Linux 32-bit.
+Support for Linux 32-bit will be discontinued starting with the RC 13.1 release.
+To ensure continued access to the forthcoming releases, RC 13.1 and up, you are
+advised to start the transitioning to Linux 64-bit.
+
+Here is a quick introduction on how to access our product information.  
+If you do not want this message to appear in the future, create an 
+initialization file (an empty file will do) in your home directory 
+called '~/.cadence/.synth_init'.
+
+  To access the product documentation in HTML and PDF, type 'cdnshelp'
+    at the system prompt. 
+  For a list of available commands, type 'help'. 
+  To view a man page for a command, type 'man <commandName>'.
+  To view a man page for an error message, type 'man <messageID>'.
+  For a list of all possible object types, type 'get_attribute -help'.
+  For a list of all available attributes by object type, type
+    'get_attribute * <object_type> -help'.
+  For a list of all attributes for every object type, type
+    'get_attribute * * -help'
+  To list only writable attributes, substitute 'get_attribute' with
+    'set_attribute'.
+  To get a template script to run RTL Compiler, use the 'write_template'
+    command.
+  To get a template script to run Conformal based on the current RTL
+    Compiler session, use the 'write_do_lec' command.
+  
+  Obsolete attributes in the current tool version.
+  To learn more, type 'get_attribute -help <attribute> <object>'.
+
+            object  attribute
+            ------  ---------
+       cpf_command  synthesize_complex_expressions
+    cpf_command_id  current_set_instance_macro
+    cpf_command_id  current_set_instance_module
+    cpf_command_id  done_in_apply_cpf
+    cpf_command_id  done_in_write_cpf
+    cpf_command_id  macro_definition_command
+    cpf_command_id  rc_command
+            design  dp_perform_rewriting_operations
+            design  lp_map_to_srpg_cells
+            design  lp_optimize_dynamic_power_first
+            design  lp_srpg_pg_driver
+            design  ovf_current_verification_directory
+          instance  black_box
+          instance  dft_inherited_dont_scan
+          instance  lp_map_to_srpg_cells
+          instance  lp_map_to_srpg_type
+          instance  lp_srpg_pg_driver
+           libcell  black_box
+           libcell  location
+               net  logic0_driven
+               net  logic1_driven
+              root  auto_ungroup_min_effort
+              root  degenerate_complex_seqs
+              root  disable_power_mode
+              root  dp_area_mode
+              root  dp_perform_csa_operations
+              root  dp_perform_rewriting_operations
+              root  dp_perform_sharing_operations
+              root  dp_perform_speculation_operations
+              root  enable_parallel_iopt
+              root  exact_match_seqs_async_controls
+              root  hdl_flatten_array
+              root  hdl_old_reg_naming
+              root  hdl_reg_naming_style_scalar
+              root  hdl_reg_naming_style_vector
+              root  hdl_trim_target_index
+              root  ignore_unknown_embedded_commands
+              root  lbr_async_clr_pre_seqs_interchangable
+              root  ovf_mode
+              root  ovf_verification_directory
+              root  ple_parameter_source_priority
+              root  pqos_virtual_buffer
+              root  retime_preserve_state_points
+              root  wlec_env_var
+              root  wlec_flat_r2n
+              root  wlec_no_exit
+              root  wlec_old_lp_ec_flow
+              root  wlec_save_ssion
+              root  wlec_sim_lib
+              root  wlec_sim_plus_lib
+              root  wlec_skip_iso_check_hier_compare
+              root  wlec_skip_lvl_check_hier_compare
+              root  wlec_verbose
+         subdesign  allow_csa_subdesign
+         subdesign  allow_sharing_subdesign
+         subdesign  allow_speculation_subdesign
+         subdesign  auto_ungroup_ok
+         subdesign  dp_perform_rewriting_operations
+
+Send us feedback at rc_feedback@cadence.com.
+============================================================================================================================================================================================================
+
+GUI is already visible.
+rc:/> Sourcing '/home/dnhushak/CPRE381/synthesize.tcl' (Thu Nov 21 21:27:44 -0600 2013)...
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+        : The specified construct has no effect on synthesis. In some cases (such as 'after' clauses in signal assignments) may cause a mismatch between and simulation.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 113.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 113.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 114.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 115.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 121.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 121.
+Error   : Failed to execute command. [LBR-116] [elaborate]
+        : No target technology library was loaded.
+        : Set the root 'library' attribute to a (list of) library name(s).
+GUI is already visible.
+Error sourcing '/home/dnhushak/CPRE381/synthesize.tcl'.
+1
+Sourcing '/home/dnhushak/CPRE381/synthesize.tcl' (Thu Nov 21 21:28:53 -0600 2013)...
+  Setting attribute of root '/': 'lib_search_path' = ../CommonFiles/libdir
+Info    : Created nominal operating condition. [LBR-412]
+        : Operating condition '_nominal_' was created for the PVT values (1.000000, 5.000000, 25.000000) in library 'osu05_stdcells.lib'.
+        : The nominal operating condition represents either the nominal PVT values if specified in the library source, or the default PVT values (1.0, 1.0, 1.0).
+
+  Message Summary for Library osu05_stdcells.lib:
+  ***********************************************
+  Created nominal operating condition. [LBR-412]: 1
+ 
+Info    : Found library cells that are unusable for mapping. [LBR-415]
+        : Library: 'osu05_stdcells.lib', Total cells: 39, Usable cells: 32, Cells unusable for mapping: 7.
+	List of unusable cells: 'PADINC PADINOUT PADOUT PADFC PADNC PADVDD PADGND .'
+        : The number of unusable cells that is listed depends on the setting of the 'information_level' root attribute. If set to a value less than 6, the list is limited to 10 unusable cells. If set to a value equal to or higher than 6, all unusable cells are listed.
+  Setting attribute of root '/': 'library' = osu05_stdcells.lib
+package MIPS32 is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:MIPS32' in file 'Basic-Components/mips32.vhd' on line 9, column 1.
+        : A previously analyzed unit is being replaced.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alucontrolv3' depends on overwritten unit 'default:mips32'.
+        : A unit is considered out-of-date when a unit that it depends on is re-analyzed.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alucontrolv3-structure' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:controlv3' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:controlv3-rom' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:cpurecords' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:cpuv3' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:cpuv3-structure' depends on overwritten unit 'default:mips32'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mips32-body' depends on overwritten unit 'default:mips32'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'alucontrolv3' depends on package 'default:mips32'.
+        : Entity is invalid because it is potentially out-of-date with respect to packages used. Check the specified entity and package and re-analyze the entity using the 'read_hdl -vhdl filename' command.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'controlv3' depends on package 'default:mips32'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'cpuv3' depends on package 'default:mips32'.
+package utils is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:utils' in file 'Basic-Components/utils.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alu_1bit' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alu_1bit-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alu_nbit' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:alu_nbit-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:decoder_nbit' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:decoder_nbit-dataflow' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:leftshifter_nbit' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:leftshifter_nbit-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_1bit_min' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_1bit_min-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_nbit_2in' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_nbit_2in-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_nbit_min' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_nbit_min-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:registerfile_nbit_mreg' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:registerfile_nbit_mreg-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:rightshifter_nbit' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:rightshifter_nbit-structure' depends on overwritten unit 'default:utils'.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:utils-body' depends on overwritten unit 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'mux_1bit_Min' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'mux_Nbit_2in' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'mux_Nbit_Min' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'decoder_Nbit' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'rightshifter_Nbit' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'leftshifter_Nbit' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'ALU_1bit' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'ALU_Nbit' depends on package 'default:utils'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'registerfile_Nbit_Mreg' depends on package 'default:utils'.
+entity and_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:and_2in' in file 'Basic-Components/Gates/and_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:and_2in-dataflow' depends on overwritten unit 'default:and_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'and_2in' in library 'default' with newly read VHDL entity 'and_2in' in the same library in file 'Basic-Components/Gates/and_2in.vhd' on line 4.
+        : A newly read VHDL entity replaces any previously read Verilog module or VHDL entity in the same library if its name matches (case-insensitively) the existing module or entity.
+    For instance:
+        VHDL 'foo'                  replaces  VHDL {'FOO' or 'foo' or 'Foo' or ...} in the same library
+        VHDL 'foo' (in any library) replaces  Verilog {'FOO' or 'foo' or 'Foo' or ...} in the same library
+ 
+A newly read Verilog module replaces any previously read Verilog module if its name matches (case-sensitively) that module.  Further, it replaces any previously read VHDL entity in the same library if its name matches (case -insensitively) that entity.
+    For instance:
+        Verilog 'foo' replaces    VHDL {'FOO' or 'foo' or 'Foo' or ...} in the same library
+        Verilog 'foo' replaces    Verilog 'foo' only
+    In addition:
+        Verilog 'foo' does not replace Verilog 'FOO' and the two remain as distinct modules.
+entity inv_1bit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:inv_1bit' in file 'Basic-Components/Gates/inv_1bit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:inv_1bit-dataflow' depends on overwritten unit 'default:inv_1bit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'inv_1bit' in library 'default' with newly read VHDL entity 'inv_1bit' in the same library in file 'Basic-Components/Gates/inv_1bit.vhd' on line 4.
+entity nand_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:nand_2in' in file 'Basic-Components/Gates/nand_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:nand_2in-dataflow' depends on overwritten unit 'default:nand_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'nand_2in' in library 'default' with newly read VHDL entity 'nand_2in' in the same library in file 'Basic-Components/Gates/nand_2in.vhd' on line 4.
+entity nor_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:nor_2in' in file 'Basic-Components/Gates/nor_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:nor_2in-dataflow' depends on overwritten unit 'default:nor_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'nor_2in' in library 'default' with newly read VHDL entity 'nor_2in' in the same library in file 'Basic-Components/Gates/nor_2in.vhd' on line 4.
+entity or_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:or_2in' in file 'Basic-Components/Gates/or_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:or_2in-dataflow' depends on overwritten unit 'default:or_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'or_2in' in library 'default' with newly read VHDL entity 'or_2in' in the same library in file 'Basic-Components/Gates/or_2in.vhd' on line 4.
+entity or_Nin is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:or_Nin' in file 'Basic-Components/Gates/or_Nin.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:or_nin-structure' depends on overwritten unit 'default:or_nin'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'or_Nin' in library 'default' with newly read VHDL entity 'or_Nin' in the same library in file 'Basic-Components/Gates/or_Nin.vhd' on line 4.
+entity xor_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:xor_2in' in file 'Basic-Components/Gates/xor_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:xor_2in-dataflow' depends on overwritten unit 'default:xor_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'xor_2in' in library 'default' with newly read VHDL entity 'xor_2in' in the same library in file 'Basic-Components/Gates/xor_2in.vhd' on line 4.
+entity mux_1bit_2in is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:mux_1bit_2in' in file 'Basic-Components/Utility-Components/mux_1bit_2in.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:mux_1bit_2in-structure' depends on overwritten unit 'default:mux_1bit_2in'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'mux_1bit_2in' in library 'default' with newly read VHDL entity 'mux_1bit_2in' in the same library in file 'Basic-Components/Utility-Components/mux_1bit_2in.vhd' on line 4.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'mux_1bit_Min' in library 'default' with newly read VHDL entity 'mux_1bit_Min' in the same library in file 'Basic-Components/Utility-Components/mux_1bit_Min.vhd' on line 6.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'mux_Nbit_2in' in library 'default' with newly read VHDL entity 'mux_Nbit_2in' in the same library in file 'Basic-Components/Utility-Components/mux_Nbit_2in.vhd' on line 6.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'mux_Nbit_Min' in library 'default' with newly read VHDL entity 'mux_Nbit_Min' in the same library in file 'Basic-Components/Utility-Components/mux_Nbit_Min.vhd' on line 6.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'decoder_Nbit' in library 'default' with newly read VHDL entity 'decoder_Nbit' in the same library in file 'Basic-Components/Utility-Components/decoder_Nbit.vhd' on line 6.
+entity extender_Nbit_Mbit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:extender_Nbit_Mbit' in file 'Basic-Components/Utility-Components/extender_Nbit_Mbit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:extender_nbit_mbit-dataflow' depends on overwritten unit 'default:extender_nbit_mbit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'extender_Nbit_Mbit' in library 'default' with newly read VHDL entity 'extender_Nbit_Mbit' in the same library in file 'Basic-Components/Utility-Components/extender_Nbit_Mbit.vhd' on line 4.
+entity onescomplementer_Nbit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:onescomplementer_Nbit' in file 'Basic-Components/Utility-Components/onescomplementer_Nbit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:onescomplementer_nbit-structure' depends on overwritten unit 'default:onescomplementer_nbit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'onescomplementer_Nbit' in library 'default' with newly read VHDL entity 'onescomplementer_Nbit' in the same library in file 'Basic-Components/Utility-Components/onescomplementer_Nbit.vhd' on line 4.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'rightshifter_Nbit' in library 'default' with newly read VHDL entity 'rightshifter_Nbit' in the same library in file 'Basic-Components/Utility-Components/rightshifter_Nbit.vhd' on line 5.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'leftshifter_Nbit' in library 'default' with newly read VHDL entity 'leftshifter_Nbit' in the same library in file 'Basic-Components/Utility-Components/leftshifter_Nbit.vhd' on line 5.
+entity addersubtractor_Nbit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:addersubtractor_Nbit' in file 'Basic-Components/ALU-Components/addersubtracter_Nbit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:addersubtractor_nbit-structure' depends on overwritten unit 'default:addersubtractor_nbit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'addersubtractor_Nbit' in library 'default' with newly read VHDL entity 'addersubtractor_Nbit' in the same library in file 'Basic-Components/ALU-Components/addersubtracter_Nbit.vhd' on line 4.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'ALU_1bit' in library 'default' with newly read VHDL entity 'ALU_1bit' in the same library in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 6.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_1bit.vhd' on line 61.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'ALU_Nbit' in library 'default' with newly read VHDL entity 'ALU_Nbit' in the same library in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 6.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Basic-Components/ALU-Components/ALU_Nbit.vhd' on line 81.
+entity fulladder_1bit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:fulladder_1bit' in file 'Basic-Components/ALU-Components/fulladder_1bit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:fulladder_1bit-structure' depends on overwritten unit 'default:fulladder_1bit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'fulladder_1bit' in library 'default' with newly read VHDL entity 'fulladder_1bit' in the same library in file 'Basic-Components/ALU-Components/fulladder_1bit.vhd' on line 4.
+entity fulladder_Nbit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:fulladder_Nbit' in file 'Basic-Components/ALU-Components/fulladder_Nbit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:fulladder_nbit-structure' depends on overwritten unit 'default:fulladder_nbit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'fulladder_Nbit' in library 'default' with newly read VHDL entity 'fulladder_Nbit' in the same library in file 'Basic-Components/ALU-Components/fulladder_Nbit.vhd' on line 4.
+entity dff is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:dff' in file 'Basic-Components/Register-Components/dff.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:dff-mixed' depends on overwritten unit 'default:dff'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'dff' in library 'default' with newly read VHDL entity 'dff' in the same library in file 'Basic-Components/Register-Components/dff.vhd' on line 4.
+entity register_Nbit is
+|
+Warning : Replacing existing design unit. [VHDLPT-800]
+        : Unit 'default:register_Nbit' in file 'Basic-Components/Register-Components/register_Nbit.vhd' on line 4, column 1.
+Warning : Marking out-of-date unit as invalid. [VHDLPT-801]
+        : Unit 'default:register_nbit-structure' depends on overwritten unit 'default:register_nbit'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'register_Nbit' in library 'default' with newly read VHDL entity 'register_Nbit' in the same library in file 'Basic-Components/Register-Components/register_Nbit.vhd' on line 4.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'registerfile_Nbit_Mreg' in library 'default' with newly read VHDL entity 'registerfile_Nbit_Mreg' in the same library in file 'Basic-Components/Register-Components/registerfile_Nbit_Mreg.vhd' on line 9.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'alucontrolv3' depends on package 'default:cpurecords'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'controlv3' depends on package 'default:cpurecords'.
+Warning : Invalid Entity. [VHDL-218]
+        : Entity 'cpuv3' depends on package 'default:cpurecords'.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'alucontrolv3' in library 'default' with newly read VHDL entity 'alucontrolv3' in the same library in file 'Project-B/SCPv3/components/alucontrolv3.vhd' on line 10.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'controlv3' in library 'default' with newly read VHDL entity 'controlv3' in the same library in file 'Project-B/SCPv3/components/controlv3.vhd' on line 7.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19.
+Warning : Replacing previously read Verilog module or VHDL entity. [HPT-76]
+        : Replacing VHDL entity 'cpuv3' in library 'default' with newly read VHDL entity 'cpuv3' in the same library in file 'Project-B/SCPv3/cpuv3.vhd' on line 6.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 109.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 112.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 113.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 113.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 114.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 115.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 120.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 121.
+Warning : Initial values are ignored for synthesis. [VHDL-639]
+        : in file 'Project-B/SCPv3/cpuv3.vhd' on line 121.
+Info    : Found library cells that are unusable for mapping. [LBR-415]
+        : Library: 'osu05_stdcells.lib', Total cells: 39, Usable cells: 32, Cells unusable for mapping: 7.
+	List of unusable cells: 'PADINC PADINOUT PADOUT PADFC PADNC PADVDD PADGND .'
+Error   : Could not find an HDL design. [CDFG-210] [elaborate]
+        : The design is 'cpuv3nents/instruction_decoder.vhd'.
+        : Ensure that the design exists or the correct file was loaded.
+GUI is already visible.
+Error sourcing '/home/dnhushak/CPRE381/synthesize.tcl'.
+1
+elaborate cpuv3
+Info    : Elaborating Design. [ELAB-1]
+        : Elaborating top-level block 'cpuv3' from file 'Project-B/SCPv3/cpuv3.vhd'.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'cpuv3' with default parameters value.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'mux_Nbit_2in' with default parameters value.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'registerfile_Nbit_Mreg' with default parameters value.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'mux_Nbit_Min' with default parameters value.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'or_Nin' with default parameters value.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'leftshifter_Nbit' with default parameters value.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[0]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+        : Use the 'hdl_undriven_signal_value' attribute to control treatment of undriven net during elaboration.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[1]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[2]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[3]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[4]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[5]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[6]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[7]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[8]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[9]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[10]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[11]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[12]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[13]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[14]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[15]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[16]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[17]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[18]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[19]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[20]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[21]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[22]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[23]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[24]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[25]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[26]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[27]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[28]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[29]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[30]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[31]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[32]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[33]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[34]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[35]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[36]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[37]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[38]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[39]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[40]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[41]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[42]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[43]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[44]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[45]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[46]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[47]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[48]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[49]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[50]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[51]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[52]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[53]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[54]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[55]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[56]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[57]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[58]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[59]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[60]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[61]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[62]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Undriven signal detected. [ELABUTL-125]
+        : Undriven bits of signal 'rom[63]' in module 'controlv3' in file 'Project-B/SCPv3/components/controlv3.vhd' on line 19, column 2.
+Warning : Signal or variable has multiple drivers. [CDFG2G-622]
+        : 's_upperload' in module 'cpuv3' in file 'Project-B/SCPv3/cpuv3.vhd' on line 113, column 2.
+        : This may cause simulation mismatches between the original and synthesized designs.
+Warning : Signal or variable has multiple drivers, including a constant driver. [CDFG2G-623]
+        : 's_upperload' in module 'cpuv3' in file 'Project-B/SCPv3/cpuv3.vhd' on line 113, column 2.
+        : Some tools may not accept this HDL.
+Info    : Done Elaborating Design. [ELAB-3]
+        : Done elaborating 'cpuv3'.
+/designs/cpuv3
+rc:/> synthesize -to_mapped -eff high -no_incr
+Info    : Deleting instances not driving any primary outputs. [GLO-32]
+        : Deleting 1057 hierarchical instances.
+        : Optimizations such as constant propagation or redundancy removal could change the connections so an instance does not drive any primary outputs anymore. To see the list of deleted instances, set the 'information_level' attribute to 2 or above.
+Warning : This attribute will be obsolete in a next major release. [TUI-32]
+        : attribute: 'auto_ungroup_ok', object type: 'subdesign'
+        : Kindly use the new attribute 'ungroup_ok' which works across the flow.
