@@ -17,11 +17,10 @@ begin
 	begin
 		if (rising_edge(clock)) then
 			if (reset = '1') then
-				-- Reset all control signals to zero
-				-- TODO: reset all control signals to zero
-				-- Or a simple way is to reset reg_write and mem_write
-				-- The code is INCOMPLETE
-				Q.MEM_ctrl.mem_write <= '0';
+				Q.control.reg_write <= '0';
+				Q.control.mem_write <= '0';
+				Q.inst              <= (Q.inst'range => '0');
+				Q.inst_string       <= "BUBBLE    BUBBLE    BUBBLE    ";
 			elsif (WE = '1') then
 				Q <= D;
 			end if;

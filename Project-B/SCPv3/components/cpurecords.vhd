@@ -6,15 +6,15 @@ use work.mips32.all;
 package cpurecords is
 	-- Control unit put signals
 	type m32_control_out is record
-		reg_dst    : m32_1bit;
-		alu_src    : m32_1bit;
-		mem_to_reg : m32_1bit;
-		reg_write  : m32_1bit;
-		mem_read   : m32_1bit;
-		mem_write  : m32_1bit;
-		branch     : m32_2bits;
-		alu_op     : m32_3bits;
-		jump       : m32_1bit;
+		reg_dst    : m32_1bit; -- EX
+		alu_src    : m32_1bit; -- EX
+		mem_to_reg : m32_1bit; -- WB
+		reg_write  : m32_1bit; -- WB
+		mem_read   : m32_1bit; -- MEM
+		mem_write  : m32_1bit; -- MEM
+		branch     : m32_2bits; -- MEM
+		alu_op     : m32_3bits; -- EX
+		jump       : m32_1bit; -- 
 		jal        : m32_1bit;
 		upper      : m32_1bit;
 		signedload : m32_1bit;

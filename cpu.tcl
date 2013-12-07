@@ -7,7 +7,18 @@ proc cpucompile {} {	r
 								Project-B/SCPv3/components/controlv3.vhd
 								Project-B/SCPv3/components/mem.vhd
 								Project-B/SCPv3/cpuv3.vhd
-                           		Project-B/SCPv3/tb_cpuv3.vhd}
+                           		Project-B/SCPv3/tb_cpuv3.vhd
+                           		Project-C/SCPv4/components/cpurecords.vhd
+                           		Project-C/SCPv4/components/instruction_decoder.vhd
+                           		Project-C/SCPv4/components/alucontrolv4.vhd
+								Project-C/SCPv4/components/controlv4.vhd
+								Project-C/SCPv4/components/ifid_reg.vhd
+								Project-C/SCPv4/components/idex_reg.vhd
+								Project-C/SCPv4/components/exmem_reg.vhd
+								Project-C/SCPv4/components/memwb_reg.vhd
+								Project-C/SCPv4/components/mem.vhd
+								Project-C/SCPv4/cpuv4.vhd
+                           		Project-C/SCPv4/tb_cpuv4.vhd}
 			}
 
 
@@ -46,6 +57,10 @@ proc cpucompile {} {	r
 
 proc cpusim  {} {vsim -voptargs=+acc work.tb_cpuv3
 				do /home/dnhushak/CPRE381/cpuv3.do
+				run 30000}
+				
+proc cpu2sim  {} {vsim -voptargs=+acc work.tb_cpuv4
+				do /home/dnhushak/CPRE381/cpuv4.do
 				run 30000}
 
 proc cpurefresh {} { 	restart -f
