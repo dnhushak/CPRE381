@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
-use work.cpurecords.all;
+use work.cpurecordsv4.all;
 
 entity MEMWB_reg is
 	port(D     : in  m32_MEMWB;         -- Input from MEM stage

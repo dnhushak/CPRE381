@@ -8,7 +8,7 @@ proc cpucompile {} {	r
 								Project-B/SCPv3/components/mem.vhd
 								Project-B/SCPv3/cpuv3.vhd
                            		Project-B/SCPv3/tb_cpuv3.vhd
-                           		Project-C/SCPv4/components/cpurecords.vhd
+                           		Project-C/SCPv4/components/cpurecordsv4.vhd
                            		Project-C/SCPv4/components/instruction_decoder.vhd
                            		Project-C/SCPv4/components/alucontrolv4.vhd
 								Project-C/SCPv4/components/controlv4.vhd

@@ -5,7 +5,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
-use work.cpurecords.all;
+use work.cpurecordsv4.all;
 
 entity alucontrolv4 is
 	port(i_op      : in  m32_3bits;     -- ALUop out of control
@@ -17,6 +17,9 @@ architecture structure of alucontrolv4 is
 begin
 	--Handle JR and JALR
 	o_alucont.jr <= '1' when ((i_op & i_funct) = "000001000" or (i_op & i_funct) = "000001001")
+		else '0';
+
+	o_alucont.jalr <= '1' when ((i_op & i_funct) = "000001001")
 		else '0';
 
 	--Handle SLL, SRL, and SRA

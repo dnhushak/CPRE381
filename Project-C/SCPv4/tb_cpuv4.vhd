@@ -83,7 +83,7 @@ begin
 	-- The instruction memory. Note that write mask is hard-wired to 0000,
 	-- write-enable is '0', and write data is 0.
 	INST_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2b/imem_sort.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-C/SCPv4/imem_sort.mif")
 		port map(imem_addr(9 downto 2),
 			     "0000",
 			     clock,
@@ -94,7 +94,7 @@ begin
 	-- The data memory. Note that the write mask is hard wired to 1111, and
 	-- both data and q are connected to dmem_data
 	DATA_MEM : mem
-		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-B/SCPv2b/dmem.mif")
+		generic map(mif_filename => "/home/dnhushak/CPRE381/Project-C/SCPv4/dmem.mif")
 		port map(dmem_addr(9 downto 2),
 			     "1111",
 			     clock,

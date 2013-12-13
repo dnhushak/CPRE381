@@ -21,6 +21,7 @@ set library_file_list {
                            	Basic-Components/Utility-Components/onescomplementer_Nbit.vhd
                            	Basic-Components/Utility-Components/rightshifter_Nbit.vhd
                            	Basic-Components/Utility-Components/leftshifter_Nbit.vhd
+                           	Basic-Components/Utility-Components/comparator_Nbit.vhd
                            	Basic-Components/ALU-Components/addersubtracter_Nbit.vhd
                            	Basic-Components/ALU-Components/ALU_1bit.vhd
                            	Basic-Components/ALU-Components/ALU_Nbit.vhd
@@ -29,7 +30,8 @@ set library_file_list {
                            	Basic-Components/Register-Components/dff.vhd
                            	Basic-Components/Register-Components/register_Nbit.vhd
                            	Basic-Components/Register-Components/registerfile_Nbit_Mreg.vhd
-				Basic-Components/Testbenches/addersubtracter_Nbit_tb.vhd
+                           	Basic-Components/Register-Components/registerfileRA_Nbit_Mreg.vhd
+							Basic-Components/Testbenches/addersubtracter_Nbit_tb.vhd
                            	Basic-Components/Testbenches/ALU_Nbit_tb.vhd
                            	Basic-Components/Testbenches/extender_Nbit_Mbit_tb.vhd
                            	Basic-Components/Testbenches/register_Nbit_tb.vhd}

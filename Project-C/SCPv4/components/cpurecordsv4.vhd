@@ -3,7 +3,7 @@ use IEEE.std_logic_1164.all;
 use work.utils.all;
 use work.mips32.all;
 
-package cpurecords is
+package cpurecordsv4 is
 	-- Control unit put signals
 	type m32_control_out is record
 		reg_dst    : m32_1bit;
@@ -22,6 +22,7 @@ package cpurecords is
 
 	type m32_alucontrol_out is record
 		jr      : m32_1bit;
+		jalr    : m32_1bit;
 		shift   : m32_1bit;
 		alucont : m32_vector(6 downto 0);
 	end record;
@@ -37,12 +38,12 @@ package cpurecords is
 	type m32_IDEX is record
 		-- Control signals
 		control     : m32_control_out;
+		alucontrol  : m32_alucontrol_out;
 		inst        : m32_word;
 		inst_string : string(1 to 30);
 
 		-- Next sequetial PC
-		PC_plus_4   : m32_word;
-		jumpaddress : m32_word;
+		PC_plus_4 : m32_word;
 
 		-- 32-bit register/immediate values
 		rdata1       : m32_word;
@@ -63,9 +64,7 @@ package cpurecords is
 		inst_string : string(1 to 30);
 
 		-- Next sequetial PC
-		PC_plus_4     : m32_word;
-		jumpaddress   : m32_word;
-		branchaddress : m32_word;
+		PC_plus_4 : m32_word;
 
 		-- ALU Results
 		aluresult : m32_word;
@@ -84,10 +83,6 @@ package cpurecords is
 		control     : m32_control_out;
 		inst        : m32_word;
 		inst_string : string(1 to 30);
-
-		-- Next sequetial PC
-		jumpaddress            : m32_word;
-		branch_or_plus4address : m32_word;
 
 		-- ALU Result and Memory Read Data
 		aluresult : m32_word;

@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
-use work.cpurecords.all;
+use work.cpurecordsv4.all;
 
 entity EXMEM_reg is
 	port(D     : in  m32_EXMEM;         -- Input from EX stage

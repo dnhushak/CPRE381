@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use work.mips32.all;
-use work.cpurecords.all;
+use work.cpurecordsv4.all;
 
 entity controlv4 is
 	port(op_code       : in  m32_6bits;

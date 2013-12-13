@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
-use work.cpurecords.all;
+use work.cpurecordsv4.all;
 
 entity cpuv4 is
 	-- Use N to change the global bit width of the CPU, A should change with it such that 2^A = N
@@ -21,20 +21,23 @@ entity cpuv4 is
 end cpuv4;
 
 architecture structure of cpuv4 is
-	component registerfile_Nbit_Mreg is
+	component registerfileRA_Nbit_Mreg is
 		-- N is size of register, M is number of registers (MUST be power of 2), A is size of register addresses (A MUST equal log2(M))
-		generic(N : integer := DATAWIDTH;
+		generic(N : integer := 32;
 			    M : integer := 32;
 			    A : integer := 5);
-		port(c_CLK : in  m32_1bit;      -- Clock input
-			 i_A   : in  m32_vector(N - 1 downto 0); -- Data Input
-			 i_Wa  : in  m32_vector(A - 1 downto 0); -- Write address
-			 c_WE  : in  m32_1bit;      -- Global Write Enable
-			 c_RST : in  m32_vector(M - 1 downto 0); -- Register Reset vector
-			 i_R1a : in  m32_vector(A - 1 downto 0); -- Read 1 address
-			 o_D1o : out m32_vector(N - 1 downto 0); -- Read 1 Data Output
-			 i_R2a : in  m32_vector(A - 1 downto 0); -- Read 2 address
-			 o_D2o : out m32_vector(N - 1 downto 0)); -- Read 2 Data Output
+		port(c_CLK  : in  std_logic;    -- Clock input
+			 i_A    : in  std_logic_vector(N - 1 downto 0); -- Data Input
+			 i_Wa   : in  std_logic_vector(A - 1 downto 0); -- Write address
+			 i_WRa  : in  std_logic_vector(N - 1 downto 0); --Return Address write input
+			 c_WE   : in  std_logic;    -- Global Write Enable
+			 c_WERa : in  std_logic;    -- Return Address Write Enable - !! Overwrites Global Write Enable
+			 c_RST  : in  std_logic_vector(M - 1 downto 0); -- Register Reset vector
+			 i_R1a  : in  std_logic_vector(A - 1 downto 0); -- Read 1 address
+			 o_D1o  : out std_logic_vector(N - 1 downto 0); -- Read 1 Data Output
+			 i_R2a  : in  std_logic_vector(A - 1 downto 0); -- Read 2 address
+			 o_D2o  : out std_logic_vector(N - 1 downto 0); -- Read 2 Data Output
+			 o_Ra   : out std_logic_vector(N - 1 downto 0)); -- Return Address Output
 	end component;
 
 	component controlv4 is
@@ -72,6 +75,14 @@ architecture structure of cpuv4 is
 			 c_WE  : in  m32_1bit;      -- Write enable
 			 i_A   : in  m32_vector(N - 1 downto 0); -- Input
 			 o_D   : out m32_vector(N - 1 downto 0)); -- Output
+	end component;
+
+	component comparator_Nbit is
+		generic(N : integer := DATAWIDTH);
+		port(i_A   : in  std_logic_vector(N - 1 downto 0);
+			 i_B   : in  std_logic_vector(N - 1 downto 0);
+			 o_EQ  : out std_logic;
+			 o_NEQ : out std_logic);
 	end component;
 
 	component alucontrolv4 is
@@ -153,24 +164,23 @@ architecture structure of cpuv4 is
 	signal IFID_WE, IDEX_WE, EXMEM_WE, MEMWB_WE, IFID_RST, IDEX_RST, EXMEM_RST, MEMWB_RST : m32_1bit;
 
 	-- PC Signals
-	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress, branchorplus4 : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress, branchorplus4, s_Ra : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
 
 	-- Control signals
-	signal zero, one, takebranch, bne, beq : m32_1bit                           := '0';
-	signal s_reset, s_upperload            : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
-	signal s_alumux                        : m32_vector(2 downto 0)             := "000";
-	signal s_leftshift                     : m32_vector(A - 1 downto 0)         := (others => '0');
-	signal s_alucontrol_out                : m32_alucontrol_out;
-	signal s_control_out                   : m32_control_out;
+	signal s_EQ, s_NEQ, takebranch, bne, beq, s_WERa : m32_1bit                           := '0';
+	signal s_reset, s_upperload                      : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal s_alumux                                  : m32_vector(2 downto 0)             := "000";
+	signal s_leftshift                               : m32_vector(A - 1 downto 0)         := (others => '0');
 
 	--Data
-	signal instruction, read1, read2, aluresult, memorydataread, registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
-	signal writemux, regwritedst                                                                                                             : m32_5bits                          := (others => '0');
+	signal registerwrite, shamt, alumux1, alumux2, writeback, loadupper, loadimmediate : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal writemux, regwritedst                                                       : m32_5bits                          := (others => '0');
 
 	--Clock
-	signal CLK : m32_logic;
+	signal CLK, NOTCLK : m32_logic;
 
 begin
+	NOTCLK   <= CLK;
 	IFID_WE  <= '1';
 	IDEX_WE  <= '1';
 	EXMEM_WE <= '1';
@@ -224,14 +234,7 @@ begin
 			     c_RST => reset,        -- The clock signal
 			     c_CLK => clock);       -- The reset signal
 
-	--Switch between previous addresses or register address for jump
-	JRSWITCHER : mux_Nbit_2in
-		generic map(N => DATAWIDTH)
-		port map(c_S => s_alucontrol_out.jr,
-			     i_A => jumporbranch,
-			     i_B => EXMEM_out.aluresult,
-			     o_D => PCUpdate);
-
+	-- Fetch instruction
 	imem_addr    <= PC;
 	IFID_in.inst <= inst;
 
@@ -249,16 +252,24 @@ begin
 		generic map(N => DATAWIDTH)
 		port map(c_S => takebranch,
 			     i_A => IFID_in.pc_plus_4,
-			     i_B => EXMEM_out.branchaddress,
+			     i_B => branchaddress,
 			     o_D => branchorplus4);
 
 	--Switch between jump address and non-jump address
 	JUMPSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => s_control_out.jump,
+		port map(c_S => IDEX_in.control.jump,
 			     i_A => branchorplus4,
-			     i_B => IDEX_out.jumpaddress,
+			     i_B => jumpaddress,
 			     o_D => jumporbranch);
+
+	--Switch to return address
+	JRSWITCHER : mux_Nbit_2in
+		generic map(N => DATAWIDTH)
+		port map(c_S => IDEX_in.alucontrol.jr,
+			     i_A => jumporbranch,
+			     i_B => s_Ra,
+			     o_D => PCUpdate);
 
 	-----------------------------------------------------------
 	-----------------------------------------------------------
@@ -266,7 +277,7 @@ begin
 	-----------------------------------------------------------
 	----------------------------------------------------------- 
 
-
+	------------------------------------------------------------------------------------------
 	--Control Forwarding
 	IDEX_in.pc_plus_4   <= IFID_out.pc_plus_4;
 	IDEX_in.inst_string <= IFID_out.inst_string;
@@ -274,32 +285,28 @@ begin
 	IDEX_in.rs          <= IFID_out.inst(25 downto 21);
 	IDEX_in.rt          <= IFID_out.inst(20 downto 16);
 	IDEX_in.rd          <= IFID_out.inst(15 downto 11);
+	------------------------------------------------------------------------------------------
 
+	------------------------------------------------------------------------------------------
+	--Controllers
 	CONTROLLER : controlv4 port map(op_code       => IFID_out.inst(31 downto 26),
 			                        o_control_out => IDEX_in.control);
+
+	-- Here, IDEX_in is used as o_control_out from the controller
+	ALUCONTROLLER : alucontrolv4
+		port map(i_op      => IDEX_in.control.alu_op,
+			     i_funct   => IDEX_in.inst(5 downto 0),
+			     o_alucont => IDEX_in.alucontrol);
+	------------------------------------------------------------------------------------------
 
 	WRITESWITCHER : mux_Nbit_2in
 		generic map(N => 5)
 		port map(c_S => MEMWB_out.control.reg_dst,
 			     i_A => MEMWB_out.inst(20 downto 16),
 			     i_B => MEMWB_out.inst(15 downto 11),
-			     o_D => writemux);
-
-	-- Write to return address register ($31 or $ra) for jal
-	JALSWITCHER : mux_Nbit_2in
-		generic map(N => 5)
-		port map(c_S => IDEX_in.control.jal,
-			     i_A => writemux,
-			     i_B => "11111",
 			     o_D => regwritedst);
 
-	-- Select return address for writing for jalselect
-	WADDRESSSWITCHER : mux_Nbit_2in
-		generic map(N => DATAWIDTH)
-		port map(c_S => IDEX_in.control.jal,
-			     i_A => writeback,
-			     i_B => PCPlus4,
-			     o_D => registerwrite);
+	s_WERa <= IDEX_in.control.jal or IDEX_in.alucontrol.jalr;
 
 	-- Reset signal
 	g_RESET : for I in 1 to DATAWIDTH - 1 generate
@@ -307,20 +314,41 @@ begin
 	end generate g_RESET;
 	s_reset(0) <= '1';
 
-	REGISTERS : registerfile_Nbit_Mreg
+	REGISTERS : registerfileRA_Nbit_Mreg
 		generic map(N => DATAWIDTH,
 			        M => 32,
 			        A => 5)
-		port map(i_R1a => MEMWB_out.inst(25 downto 21),
-			     i_R2a => MEMWB_out.inst(20 downto 16),
-			     i_Wa  => regwritedst,
-			     i_A   => registerwrite,
-			     o_D1o => IDEX_in.rdata1,
-			     o_D2o => IDEX_in.rdata2,
-			     c_WE  => MEMWB_out.control.reg_write,
-			     c_RST => s_reset,
-			     c_CLK => CLK);
+		port map(i_R1a  => IFID_out.inst(25 downto 21),
+			     i_R2a  => IFID_out.inst(20 downto 16),
+			     i_Wa   => regwritedst,
+			     i_WRa  => IFID_out.pc_plus_4,
+			     i_A    => writeback,
+			     o_D1o  => IDEX_in.rdata1,
+			     o_D2o  => IDEX_in.rdata2,
+			     o_Ra   => s_Ra,
+			     c_WE   => MEMWB_out.control.reg_write,
+			     c_WERa => s_WERa,
+			     c_RST  => s_reset,
+			     c_CLK  => NOTCLK);
 
+	------------------------------------------------------------------------------------------
+	-- Comparator for Branching
+	COMPARE : comparator_Nbit
+		generic map(N => DATAWIDTH)
+		port map(i_A   => IDEX_in.rdata1,
+			     i_B   => IDEX_in.rdata2,
+			     o_EQ  => s_EQ,
+			     o_NEQ => s_NEQ);
+
+	-- AND branch and zero for BEQ, AND branch and not(zero) for bne
+	-- NOTE that IDEX_in is the direct line from the control out
+	beq        <= IDEX_in.control.branch(0) and s_EQ;
+	bne        <= IDEX_in.control.branch(1) and s_NEQ;
+	takebranch <= beq or bne;
+	------------------------------------------------------------------------------------------
+
+	------------------------------------------------------------------------------------------
+	-- Jump Address Calculation
 	jumpinstruction <= "000000" & IFID_out.inst(25 downto 0);
 
 	INSTRUCTIONSHIFTER : leftshifter_Nbit
@@ -330,14 +358,33 @@ begin
 			     c_Shamt => "00010",
 			     o_D     => jumpinstructionX4);
 
-	IDEX_in.jumpaddress <= PCPlus4(31 downto 28) & jumpinstructionX4(27 downto 0);
+	jumpaddress <= PCPlus4(31 downto 28) & jumpinstructionX4(27 downto 0);
+	------------------------------------------------------------------------------------------
 
+	------------------------------------------------------------------------------------------
 	-- Extension is for branching and immediate loading into ALUv2
 	EXTENSION : extender_Nbit_Mbit
 		generic map(N => 16, M => DATAWIDTH)
 		port map(c_Ext => IDEX_in.control.signedload,
 			     i_A   => IDEX_in.inst(15 downto 0),
 			     o_D   => IDEX_in.sign_ext_imm);
+
+	--BRANCHING
+	BRANCHSHIFTER : leftshifter_Nbit
+		generic map(N => DATAWIDTH,
+			        A => A)
+		port map(i_A     => IDEX_in.sign_ext_imm,
+			     c_Shamt => "00010",
+			     o_D     => branchaddressX4);
+
+	--Add PC +4 to multiplied relative Branch Address to get absolute PC address
+	BRANCHADDER : fulladder_Nbit
+		generic map(N => DATAWIDTH)
+		port map(i_A => IFID_out.pc_plus_4,
+			     i_B => branchaddressX4,
+			     i_C => '0',
+			     o_D => branchaddress,
+			     o_C => open);
 
 	-----------------------------------------------------------
 	-----------------------------------------------------------
@@ -355,32 +402,12 @@ begin
 	EXMEM_in.rs          <= IDEX_out.rs;
 	EXMEM_in.rt          <= IDEX_out.rt;
 
-	ALUCONTROLLER : alucontrolv4
-		port map(i_op      => IDEX_out.control.alu_op,
-			     i_funct   => IDEX_out.inst(5 downto 0),
-			     o_alucont => s_alucontrol_out);
-
 	SHAMTEXTENDER : extender_Nbit_Mbit
 		generic map(N => 5,
 			        M => DATAWIDTH)
 		port map(c_Ext => '1',
 			     i_A   => IDEX_out.inst(10 downto 6),
 			     o_D   => shamt);
-
-	-- ALU Op is: Shift(1), Shift(0), Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
-	s_alumux <= s_alucontrol_out.alucont(4) & s_alucontrol_out.alucont(1 downto 0);
-	MASTERALUv2 : ALU_Nbit
-		generic map(N => DATAWIDTH)
-		port map(i_A     => alumux1,
-			     i_B     => alumux2,
-			     i_Ainv  => s_alucontrol_out.alucont(3),
-			     i_Binv  => s_alucontrol_out.alucont(2),
-			     i_C     => s_alucontrol_out.alucont(2),
-			     c_Op    => s_alumux,
-			     c_Shift => s_alucontrol_out.alucont(6 downto 5),
-			     o_D     => EXMEM_in.aluresult,
-			     o_OF    => open,
-			     o_Zero  => EXMEM_in.aluzero);
 
 	s_leftshift(A - 1)                   <= '1';
 	s_leftshift(A - 2 downto 0)          <= (others => '0');
@@ -398,7 +425,7 @@ begin
 	-- Switch between the left-shifted immediate (for lui) or the extended immediate
 	LOADUPPERSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(i_A => extended,
+		port map(i_A => IDEX_out.sign_ext_imm,
 			     i_B => loadupper,
 			     c_S => IDEX_out.control.upper,
 			     o_D => loadimmediate);
@@ -406,7 +433,7 @@ begin
 	-- Switch between register read 1 output or the shift amount in instruction for input A of ALU
 	ALUSWITCHER1 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => s_alucontrol_out.shift,
+		port map(c_S => IDEX_out.alucontrol.shift,
 			     i_A => IDEX_out.rdata1,
 			     i_B => shamt,
 			     o_D => alumux1);
@@ -419,22 +446,20 @@ begin
 			     i_B => loadimmediate,
 			     o_D => alumux2);
 
-	--BRANCHING
-	BRANCHSHIFTER : leftshifter_Nbit
-		generic map(N => DATAWIDTH,
-			        A => A)
-		port map(i_A     => IDEX_out.sign_ext_imm,
-			     c_Shamt => "00010",
-			     o_D     => branchaddressX4);
-
-	--Add PC +4 to multiplied relative Branch Address to get absolute PC address
-	BRANCHADDER : fulladder_Nbit
+	-- ALU Op is: Shift(1), Shift(0), Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
+	s_alumux <= IDEX_out.alucontrol.alucont(4) & IDEX_out.alucontrol.alucont(1 downto 0);
+	MASTERALUv2 : ALU_Nbit
 		generic map(N => DATAWIDTH)
-		port map(i_A => IDEX_out.pc_plus_4,
-			     i_B => branchaddressX4,
-			     i_C => '0',
-			     o_D => EXMEM_in.branchaddress,
-			     o_C => open);
+		port map(i_A     => alumux1,
+			     i_B     => alumux2,
+			     i_Ainv  => IDEX_out.alucontrol.alucont(3),
+			     i_Binv  => IDEX_out.alucontrol.alucont(2),
+			     i_C     => IDEX_out.alucontrol.alucont(2),
+			     c_Op    => s_alumux,
+			     c_Shift => IDEX_out.alucontrol.alucont(6 downto 5),
+			     o_D     => EXMEM_in.aluresult,
+			     o_OF    => open,
+			     o_Zero  => EXMEM_in.aluzero);
 
 	-----------------------------------------------------------
 	-----------------------------------------------------------
@@ -458,12 +483,6 @@ begin
 	dmem_wmask        <= "1111";        -- Data memory write mask
 	MEMWB_in.mem_data <= dmem_rdata;
 	dmem_wdata        <= EXMEM_out.rdata2;
-
-	--AND branch and zero for BEQ, AND branch and not(zero) for bne
-	beq        <= EXMEM_out.control.branch(0) and EXMEM_out.aluzero;
-	one        <= not EXMEM_out.aluzero;
-	bne        <= EXMEM_out.control.branch(1) and one;
-	takebranch <= beq or bne;
 
 	-----------------------------------------------------------
 	--WB Stage
