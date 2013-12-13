@@ -156,6 +156,24 @@ architecture structure of cpuv4 is
 			 clock : in  m32_1bit);     -- The clock signal
 	end component;
 
+	component hazarddetect is
+		port(IDEX_out  : in  m32_IDEX;
+			 IFID_out  : in  m32_IFID;
+			 EXMEM_out : in  m32_EXMEM;
+			 MEMWB_out : in  m32_MEMWB;
+			 jump      : in  m32_1bit;
+			 jr        : in  m32_1bit;
+			 branch    : in  m32_1bit;
+			 IDEX_WE   : out m32_1bit;
+			 IFID_WE   : out m32_1bit;
+			 EXMEM_WE  : out m32_1bit;
+			 MEMWB_WE  : out m32_1bit;
+			 IDEX_RST  : out m32_1bit;
+			 IFID_RST  : out m32_1bit;
+			 EXMEM_RST : out m32_1bit;
+			 MEMWB_RST : out m32_1bit);
+	end component;
+
 	-- Pipeline Register Signals
 	signal IFID_in, IFID_out                                                              : m32_IFID;
 	signal IDEX_in, IDEX_out                                                              : m32_IDEX;
@@ -180,11 +198,8 @@ architecture structure of cpuv4 is
 	signal CLK, NOTCLK : m32_logic;
 
 begin
-	NOTCLK   <= CLK;
-	IFID_WE  <= '1';
-	IDEX_WE  <= '1';
-	EXMEM_WE <= '1';
-	MEMWB_WE <= '1';
+	NOTCLK <= CLK;
+
 	-----------------------------------------------------------
 	--Pipeline Registers
 	-----------------------------------------------------------
@@ -215,6 +230,23 @@ begin
 			     WE    => MEMWB_WE,     -- Write enable
 			     reset => MEMWB_RST,    -- The reset/flush signal
 			     clock => CLK);
+			     
+	HAZARD : hazarddetect
+		port map(IDEX_out  => IDEX_out,
+			     IFID_out  => IFID_out,
+			     EXMEM_out => EXMEM_out,
+			     MEMWB_out => MEMWB_out,
+			     jump      => IDEX_in.control.jump,
+			     jr        => IDEX_in.alucontrol.jr,
+			     branch    => takebranch,
+			     IDEX_WE   => IDEX_WE,
+			     IFID_WE   => IFID_WE,
+			     EXMEM_WE  => EXMEM_WE,
+			     MEMWB_WE  => MEMWB_WE,
+			     IDEX_RST  => IDEX_RST,
+			     IFID_RST  => IFID_RST,
+			     EXMEM_RST => EXMEM_RST,
+			     MEMWB_RST => MEMWB_RST);
 
 	CLK <= clock;
 
