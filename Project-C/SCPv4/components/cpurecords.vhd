@@ -36,8 +36,8 @@ package cpurecords is
 	-- The ID/EX register input/output type
 	type m32_IDEX is record
 		-- Control signals
-		control : m32_control_out;
-		inst    : m32_word;
+		control     : m32_control_out;
+		inst        : m32_word;
 		inst_string : string(1 to 30);
 
 		-- Next sequetial PC
@@ -58,8 +58,8 @@ package cpurecords is
 	-- The EX/MEM register input/output type
 	type m32_EXMEM is record
 		-- Control signals
-		control : m32_control_out;
-		inst    : m32_word;
+		control     : m32_control_out;
+		inst        : m32_word;
 		inst_string : string(1 to 30);
 
 		-- Next sequetial PC
@@ -70,6 +70,7 @@ package cpurecords is
 		-- ALU Results
 		aluresult : m32_word;
 		aluzero   : m32_1bit;
+		rdata2    : m32_word;
 
 		-- Register numbers
 		rs : m32_5bits;
@@ -80,8 +81,8 @@ package cpurecords is
 	-- The MEM/WB register input/output type
 	type m32_MEMWB is record
 		-- Control signals
-		control : m32_control_out;
-		inst    : m32_word;
+		control     : m32_control_out;
+		inst        : m32_word;
 		inst_string : string(1 to 30);
 
 		-- Next sequetial PC

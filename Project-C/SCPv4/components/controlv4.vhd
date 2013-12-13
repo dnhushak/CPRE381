@@ -20,7 +20,7 @@ architecture rom of controlv4 is
 		--	      "RAMRMMBBOOOJJUU
 		0      => "100100000000001",    -- R-type instruction (add, sub, and, or, slt)
 		2      => "---00000---0101",    -- j
-		3      => "---10000---1101",    -- jal
+		3      => "---00000---1101",    -- jal
 		4      => "-0-000100100001",    -- beq
 		5      => "-0-000010100001",    -- bne
 		8      => "010100000010001",    -- addi

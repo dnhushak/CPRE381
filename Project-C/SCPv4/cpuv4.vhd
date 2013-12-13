@@ -104,6 +104,12 @@ architecture structure of cpuv4 is
 			 o_D     : out m32_vector(N - 1 downto 0)); -- shifted output
 	end component;
 
+	component instruction_decoder
+		port(i_instr_bit : in  m32_word;
+			 c_clk       : in  m32_1bit;
+			 o_instr_str : out string);
+	end component instruction_decoder;
+
 	-----------------------------------------------------------
 	--Pipeline Registers
 	-----------------------------------------------------------
@@ -132,21 +138,22 @@ architecture structure of cpuv4 is
 	end component;
 
 	component MEMWB_reg is
-		port(D     : in  m32_EXMEM;     -- Input from ID stage
-			 Q     : out m32_EXMEM;     -- Output to EX stage
+		port(D     : in  m32_MEMWB;     -- Input from ID stage
+			 Q     : out m32_MEMWB;     -- Output to EX stage
 			 WE    : in  m32_1bit;      -- Write enable
 			 reset : in  m32_1bit;      -- The reset/flush signal
 			 clock : in  m32_1bit);     -- The clock signal
 	end component;
 
 	-- Pipeline Register Signals
-	signal IFID_in, IFID_out   : m32_IFID;
-	signal IDEX_in, IDEX_out   : m32_IDEX;
-	signal EXMEM_in, EXMEM_out : m32_EXMEM;
-	signal MEMWB_in, MEMWB_out : m32_MEMWB;
+	signal IFID_in, IFID_out                                                              : m32_IFID;
+	signal IDEX_in, IDEX_out                                                              : m32_IDEX;
+	signal EXMEM_in, EXMEM_out                                                            : m32_EXMEM;
+	signal MEMWB_in, MEMWB_out                                                            : m32_MEMWB;
+	signal IFID_WE, IDEX_WE, EXMEM_WE, MEMWB_WE, IFID_RST, IDEX_RST, EXMEM_RST, MEMWB_RST : m32_1bit;
 
 	-- PC Signals
-	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
+	signal PC, PCUpdate, jumporbranch, branchaddressX4, branchaddress, extended, PCPlus4, jumpaddress, jumpinstruction, jumpinstructionX4, nojumpaddress, branchorplus4 : m32_vector(DATAWIDTH - 1 downto 0) := (others => '0');
 
 	-- Control signals
 	signal zero, one, takebranch, bne, beq : m32_1bit                           := '0';
@@ -164,10 +171,51 @@ architecture structure of cpuv4 is
 	signal CLK : m32_logic;
 
 begin
+	IFID_WE  <= '1';
+	IDEX_WE  <= '1';
+	EXMEM_WE <= '1';
+	MEMWB_WE <= '1';
+	-----------------------------------------------------------
+	--Pipeline Registers
+	-----------------------------------------------------------
+	IFID : IFID_reg
+		port map(D     => IFID_in,      -- Input from IF stage
+			     Q     => IFID_out,     -- Output to ID stage
+			     WE    => IFID_WE,      -- Write enable
+			     reset => IFID_RST,     -- The reset/flush signal
+			     clock => CLK);         -- The clock signal
+
+	IDEX : IDEX_reg
+		port map(D     => IDEX_in,      -- Input from IF stage
+			     Q     => IDEX_out,     -- Output to ID stage
+			     WE    => IDEX_WE,      -- Write enable
+			     reset => IDEX_RST,     -- The reset/flush signal
+			     clock => CLK);         -- The clock signal
+
+	EXMEM : EXMEM_reg
+		port map(D     => EXMEM_in,     -- Input from IF stage
+			     Q     => EXMEM_out,    -- Output to ID stage
+			     WE    => EXMEM_WE,     -- Write enable
+			     reset => EXMEM_RST,    -- The reset/flush signal
+			     clock => CLK);
+
+	MEMWB : MEMWB_reg
+		port map(D     => MEMWB_in,     -- Input from IF stage
+			     Q     => MEMWB_out,    -- Output to ID stage
+			     WE    => MEMWB_WE,     -- Write enable
+			     reset => MEMWB_RST,    -- The reset/flush signal
+			     clock => CLK);
+
 	CLK <= clock;
+
 	-----------------------------------------------------------
-	--Instruction I/O
+	--IF Stage
 	-----------------------------------------------------------
+	INST_DECODER : instruction_decoder
+		port map(i_instr_bit => inst,
+			     c_clk       => clock,
+			     o_instr_str => IFID_in.inst_string);
+
 	PCREG : register_Nbit
 		generic map(N => DATAWIDTH)     -- Size of the register
 		port map(i_A   => PCUpdate,     -- Data input
@@ -176,24 +224,71 @@ begin
 			     c_RST => reset,        -- The clock signal
 			     c_CLK => clock);       -- The reset signal
 
-	imem_addr   <= PC;
-	instruction <= inst;
+	--Switch between previous addresses or register address for jump
+	JRSWITCHER : mux_Nbit_2in
+		generic map(N => DATAWIDTH)
+		port map(c_S => s_alucontrol_out.jr,
+			     i_A => jumporbranch,
+			     i_B => EXMEM_out.aluresult,
+			     o_D => PCUpdate);
+
+	imem_addr    <= PC;
+	IFID_in.inst <= inst;
+
+	--Add four to PC 
+	PCADDFOUR : fulladder_Nbit
+		generic map(N => DATAWIDTH)
+		port map(i_A => PC,
+			     i_B => X"00000004",
+			     i_C => '0',
+			     o_D => IFID_in.pc_plus_4,
+			     o_C => open);
+
+	--Switch between PC + 4 and branch address (the result here called nojumpaddress)
+	BRANCHSWITCHER : mux_Nbit_2in
+		generic map(N => DATAWIDTH)
+		port map(c_S => takebranch,
+			     i_A => IFID_in.pc_plus_4,
+			     i_B => EXMEM_out.branchaddress,
+			     o_D => branchorplus4);
+
+	--Switch between jump address and non-jump address
+	JUMPSWITCHER : mux_Nbit_2in
+		generic map(N => DATAWIDTH)
+		port map(c_S => s_control_out.jump,
+			     i_A => branchorplus4,
+			     i_B => IDEX_out.jumpaddress,
+			     o_D => jumporbranch);
 
 	-----------------------------------------------------------
-	--Register I/O
 	-----------------------------------------------------------
+	--ID Stage
+	-----------------------------------------------------------
+	----------------------------------------------------------- 
+
+
+	--Control Forwarding
+	IDEX_in.pc_plus_4   <= IFID_out.pc_plus_4;
+	IDEX_in.inst_string <= IFID_out.inst_string;
+	IDEX_in.inst        <= IFID_out.inst;
+	IDEX_in.rs          <= IFID_out.inst(25 downto 21);
+	IDEX_in.rt          <= IFID_out.inst(20 downto 16);
+	IDEX_in.rd          <= IFID_out.inst(15 downto 11);
+
+	CONTROLLER : controlv4 port map(op_code       => IFID_out.inst(31 downto 26),
+			                        o_control_out => IDEX_in.control);
 
 	WRITESWITCHER : mux_Nbit_2in
 		generic map(N => 5)
-		port map(c_S => s_control_out.reg_dst,
-			     i_A => instruction(20 downto 16),
-			     i_B => instruction(15 downto 11),
+		port map(c_S => MEMWB_out.control.reg_dst,
+			     i_A => MEMWB_out.inst(20 downto 16),
+			     i_B => MEMWB_out.inst(15 downto 11),
 			     o_D => writemux);
 
 	-- Write to return address register ($31 or $ra) for jal
 	JALSWITCHER : mux_Nbit_2in
 		generic map(N => 5)
-		port map(c_S => s_control_out.jal,
+		port map(c_S => IDEX_in.control.jal,
 			     i_A => writemux,
 			     i_B => "11111",
 			     o_D => regwritedst);
@@ -201,7 +296,7 @@ begin
 	-- Select return address for writing for jalselect
 	WADDRESSSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => s_control_out.jal,
+		port map(c_S => IDEX_in.control.jal,
 			     i_A => writeback,
 			     i_B => PCPlus4,
 			     o_D => registerwrite);
@@ -216,25 +311,60 @@ begin
 		generic map(N => DATAWIDTH,
 			        M => 32,
 			        A => 5)
-		port map(i_R1a => instruction(25 downto 21),
-			     i_R2a => instruction(20 downto 16),
+		port map(i_R1a => MEMWB_out.inst(25 downto 21),
+			     i_R2a => MEMWB_out.inst(20 downto 16),
 			     i_Wa  => regwritedst,
 			     i_A   => registerwrite,
-			     o_D1o => read1,
-			     o_D2o => read2,
-			     c_WE  => s_control_out.reg_write,
+			     o_D1o => IDEX_in.rdata1,
+			     o_D2o => IDEX_in.rdata2,
+			     c_WE  => MEMWB_out.control.reg_write,
 			     c_RST => s_reset,
 			     c_CLK => CLK);
 
+	jumpinstruction <= "000000" & IFID_out.inst(25 downto 0);
+
+	INSTRUCTIONSHIFTER : leftshifter_Nbit
+		generic map(N => DATAWIDTH,
+			        A => A)
+		port map(i_A     => jumpinstruction,
+			     c_Shamt => "00010",
+			     o_D     => jumpinstructionX4);
+
+	IDEX_in.jumpaddress <= PCPlus4(31 downto 28) & jumpinstructionX4(27 downto 0);
+
+	-- Extension is for branching and immediate loading into ALUv2
+	EXTENSION : extender_Nbit_Mbit
+		generic map(N => 16, M => DATAWIDTH)
+		port map(c_Ext => IDEX_in.control.signedload,
+			     i_A   => IDEX_in.inst(15 downto 0),
+			     o_D   => IDEX_in.sign_ext_imm);
+
 	-----------------------------------------------------------
-	--ALUv2 I/O
 	-----------------------------------------------------------
+	--EX Stage
+	-----------------------------------------------------------
+	-----------------------------------------------------------
+
+	--Control Forwarding
+	EXMEM_in.pc_plus_4   <= IDEX_out.pc_plus_4;
+	EXMEM_in.inst_string <= IDEX_out.inst_string;
+	EXMEM_in.inst        <= IDEX_out.inst;
+	EXMEM_in.control     <= IDEX_out.control;
+	EXMEM_in.rdata2      <= IDEX_out.rdata2;
+	EXMEM_in.rd          <= IDEX_out.rd;
+	EXMEM_in.rs          <= IDEX_out.rs;
+	EXMEM_in.rt          <= IDEX_out.rt;
+
+	ALUCONTROLLER : alucontrolv4
+		port map(i_op      => IDEX_out.control.alu_op,
+			     i_funct   => IDEX_out.inst(5 downto 0),
+			     o_alucont => s_alucontrol_out);
 
 	SHAMTEXTENDER : extender_Nbit_Mbit
 		generic map(N => 5,
 			        M => DATAWIDTH)
 		port map(c_Ext => '1',
-			     i_A   => instruction(10 downto 6),
+			     i_A   => IDEX_out.inst(10 downto 6),
 			     o_D   => shamt);
 
 	-- ALU Op is: Shift(1), Shift(0), Mux(2), Ainv, Binv & Cin, Mux(1), Mux(0)
@@ -248,14 +378,15 @@ begin
 			     i_C     => s_alucontrol_out.alucont(2),
 			     c_Op    => s_alumux,
 			     c_Shift => s_alucontrol_out.alucont(6 downto 5),
-			     o_D     => aluresult,
+			     o_D     => EXMEM_in.aluresult,
 			     o_OF    => open,
-			     o_Zero  => zero);
+			     o_Zero  => EXMEM_in.aluzero);
 
 	s_leftshift(A - 1)                   <= '1';
 	s_leftshift(A - 2 downto 0)          <= (others => '0');
-	s_upperload(15 downto 0)             <= instruction(15 downto 0);
+	s_upperload(15 downto 0)             <= IDEX_out.inst(15 downto 0);
 	s_upperload(DATAWIDTH - 1 downto 16) <= (others => '0');
+
 	-- This is for lui - shifts instruction 15 -> 0 left by 16
 	UPPERLOADER : leftshifter_Nbit
 		generic map(N => DATAWIDTH,
@@ -269,133 +400,79 @@ begin
 		generic map(N => DATAWIDTH)
 		port map(i_A => extended,
 			     i_B => loadupper,
-			     c_S => s_control_out.upper,
+			     c_S => IDEX_out.control.upper,
 			     o_D => loadimmediate);
 
 	-- Switch between register read 1 output or the shift amount in instruction for input A of ALU
 	ALUSWITCHER1 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
 		port map(c_S => s_alucontrol_out.shift,
-			     i_A => read1,
+			     i_A => IDEX_out.rdata1,
 			     i_B => shamt,
 			     o_D => alumux1);
 
 	-- Switch between register read 2 output or the immediate value for input B of ALU
 	ALUSWITCHER2 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => s_control_out.alu_src,
-			     i_A => read2,
+		port map(c_S => IDEX_out.control.alu_src,
+			     i_A => IDEX_out.rdata2,
 			     i_B => loadimmediate,
 			     o_D => alumux2);
 
-	-- Extension is for branching and immediate loading into ALUv2
-	EXTENSION : extender_Nbit_Mbit
-		generic map(N => 16, M => DATAWIDTH)
-		port map(c_Ext => s_control_out.signedload,
-			     i_A   => instruction(15 downto 0),
-			     o_D   => extended);
-
-	ALUCONTROLLER : alucontrolv4
-		port map(i_op      => s_control_out.alu_op,
-			     i_funct   => instruction(5 downto 0),
-			     o_alucont => s_alucontrol_out);
-
-	-----------------------------------------------------------
-	--Control I/O
-	-----------------------------------------------------------   
-
-	CONTROLLER : controlv4 port map(op_code       => instruction(31 downto 26),
-			                        o_control_out => s_control_out);
-
-	-----------------------------------------------------------
-	--Memory I/O
-	-----------------------------------------------------------   
-
-	-------FIX BYTE VS WORD ADDRESS------
-	dmem_addr      <= aluresult;
-	dmem_read      <= s_control_out.mem_read;
-	dmem_write     <= s_control_out.mem_write;
-	dmem_wmask     <= "1111";           -- Data memory write mask
-	memorydataread <= dmem_rdata;
-	dmem_wdata     <= read2;
-
-	-----------------------------------------------------------
-	--Writeback
-	-----------------------------------------------------------   
-	WRITEBACKSWITCHER : mux_Nbit_2in
-		generic map(N => DATAWIDTH)
-		port map(c_S => s_control_out.mem_to_reg,
-			     i_A => aluresult,
-			     i_B => memorydataread,
-			     o_D => writeback);
-
-	-----------------------------------------------------------
-	--PC Logic
-	-----------------------------------------------------------  
-
-	--Add four to PC 
-	PCADDFOUR : fulladder_Nbit
-		generic map(N => DATAWIDTH)
-		port map(i_A => PC,
-			     i_B => X"00000004",
-			     i_C => '0',
-			     o_D => PCPlus4,
-			     o_C => open);
-
+	--BRANCHING
 	BRANCHSHIFTER : leftshifter_Nbit
 		generic map(N => DATAWIDTH,
 			        A => A)
-		port map(i_A     => extended,
+		port map(i_A     => IDEX_out.sign_ext_imm,
 			     c_Shamt => "00010",
 			     o_D     => branchaddressX4);
 
 	--Add PC +4 to multiplied relative Branch Address to get absolute PC address
 	BRANCHADDER : fulladder_Nbit
 		generic map(N => DATAWIDTH)
-		port map(i_A => PCPlus4,
+		port map(i_A => IDEX_out.pc_plus_4,
 			     i_B => branchaddressX4,
 			     i_C => '0',
-			     o_D => branchaddress,
+			     o_D => EXMEM_in.branchaddress,
 			     o_C => open);
 
+	-----------------------------------------------------------
+	-----------------------------------------------------------
+	--MEM Stage
+	-----------------------------------------------------------   
+	-----------------------------------------------------------
+
+	--Control Forwarding
+	MEMWB_in.inst_string <= EXMEM_out.inst_string;
+	MEMWB_in.inst        <= EXMEM_out.inst;
+	MEMWB_in.aluresult   <= EXMEM_out.aluresult;
+	MEMWB_in.control     <= EXMEM_out.control;
+	MEMWB_in.rd          <= EXMEM_out.rd;
+	MEMWB_in.rs          <= EXMEM_out.rs;
+	MEMWB_in.rt          <= EXMEM_out.rt;
+
+	-------FIX BYTE VS WORD ADDRESS------
+	dmem_addr         <= EXMEM_out.aluresult;
+	dmem_read         <= EXMEM_out.control.mem_read;
+	dmem_write        <= EXMEM_out.control.mem_write;
+	dmem_wmask        <= "1111";        -- Data memory write mask
+	MEMWB_in.mem_data <= dmem_rdata;
+	dmem_wdata        <= EXMEM_out.rdata2;
+
 	--AND branch and zero for BEQ, AND branch and not(zero) for bne
-	beq        <= s_control_out.branch(0) and zero;
-	one        <= not zero;
-	bne        <= s_control_out.branch(1) and one;
+	beq        <= EXMEM_out.control.branch(0) and EXMEM_out.aluzero;
+	one        <= not EXMEM_out.aluzero;
+	bne        <= EXMEM_out.control.branch(1) and one;
 	takebranch <= beq or bne;
 
-	--Switch between PC + 4 and branch address (the result here called nojumpaddress)
-	BRANCHSWITCHER : mux_Nbit_2in
+	-----------------------------------------------------------
+	--WB Stage
+	-----------------------------------------------------------   
+	WRITEBACKSWITCHER : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
-		port map(c_S => takebranch,
-			     i_A => PCPlus4,
-			     i_B => branchaddress,
-			     o_D => nojumpaddress);
+		port map(c_S => MEMWB_out.control.mem_to_reg,
+			     i_A => MEMWB_out.aluresult,
+			     i_B => MEMWB_out.mem_data,
+			     o_D => writeback);
 
-	jumpinstruction <= "000000" & instruction(25 downto 0);
-
-	INSTRUCTIONSHIFTER : leftshifter_Nbit
-		generic map(N => DATAWIDTH,
-			        A => A)
-		port map(i_A     => jumpinstruction,
-			     c_Shamt => "00010",
-			     o_D     => jumpinstructionX4);
-
-	jumpaddress <= PCPlus4(31 downto 28) & jumpinstructionX4(27 downto 0);
-
-	--Switch between jump address and non-jump address
-	JUMPSWITCHER : mux_Nbit_2in
-		generic map(N => DATAWIDTH)
-		port map(c_S => s_control_out.jump,
-			     i_A => nojumpaddress,
-			     i_B => jumpaddress,
-			     o_D => jumporbranch);
-
-	--Switch between previous addresses or register address for jump
-	JRSWITCHER : mux_Nbit_2in
-		generic map(N => DATAWIDTH)
-		port map(c_S => s_alucontrol_out.jr,
-			     i_A => jumporbranch,
-			     i_B => aluresult,
-			     o_D => PCUpdate);
 end structure;

@@ -65,3 +65,8 @@ proc cpu2sim  {} {vsim -voptargs=+acc work.tb_cpuv4
 
 proc cpurefresh {} { 	restart -f
 			run 30000}
+
+proc mem2dump {} {	mem save -dataradix dec -wordsperline 1 -outfile /home/dnhushak/CPRE381/memdump.mif /tb_cpuv4/data_mem/mem}
+
+proc memdump {} {	mem save -dataradix dec -wordsperline 1 -outfile /home/dnhushak/CPRE381/memdump.mif /tb_cpuv3/data_mem/mem}
+
