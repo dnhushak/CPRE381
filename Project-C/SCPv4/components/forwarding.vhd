@@ -5,28 +5,24 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
+use work.cpurecordsv4.all;
 
 entity fowarding is
-	port(	MEM_WB_RegWrite	:	in m32_1bit;
-			MEM_WB_RegRd	:	in m32_word;
-			EX_MEM_RegWrite	:	in m32_1bit;
-			EX_MEM_RegRd	:	in m32_word;
-			ID_EX_RegRs		:	in m32_word;
-			ID_EX_RegRt		:	in m32_word;
-			Foward_A		:	out m32_2bits;
-			Foward_B		:	out m32_2bits);
+	port(MEMWB_out : in  m32_MEMWB;
+		 EXMEM_out : in  m32_EXMEM;
+		 IDEX_out  : in  m32_IDEX;
+		 Foward_A  : out m32_2bits;
+		 Foward_B  : out m32_2bits);
 end fowarding;
 
 architecture structure of fowarding is
-
 begin
-
-	Foward_A <= "10" when (EX_MEM_RegWrite = '1') and (EX_MEM_RegRd /= "00000000000000000000000000000000") and (EX_MEM_RegRd = ID_EX_RegRs) else
-				"01" when (MEM_WB_RegWrite = '1') and (MEM_WB_RegRd /= "00000000000000000000000000000000") and not((EX_MEM_RegWrite = '1') and (EX_MEM_RegRd /= "00000000000000000000000000000000") and (EX_MEM_RegRd = ID_EX_RegRs)) and (MEM_WB_RegRd = ID_EX_RegRs) else
+	Foward_A <= "10" when (EXMEM_out.control.reg_write = '1') and ((EXMEM_out.Rd = IDEX_out.Rs and EXMEM_out.inst(31 downto 26) = "000000") or (EXMEM_out.Rt = IDEX_out.Rs and EXMEM_out.inst(31 downto 26) /= "000000")) else 
+				"01" when (MEMWB_out.control.reg_write = '1') and (EXMEM_out.control.reg_write /= '1') and ((MEMWB_out.Rd = IDEX_out.Rs and MEMWB_out.inst(31 downto 26) = "000000") or (MEMWB_out.Rt = IDEX_out.Rs and MEMWB_out.inst(31 downto 26) /= "000000")) else
 				"00";
-				
-	Foward_B <= "10" when (EX_MEM_RegWrite = '1') and (EX_MEM_RegRd /= "00000000000000000000000000000000") and (EX_MEM_RegRd = ID_EX_RegRt) else
-				"01" when (MEM_WB_RegWrite = '1') and (MEM_WB_RegRd /= "00000000000000000000000000000000") and not((EX_MEM_RegWrite = '1') and (EX_MEM_RegRd /= "00000000000000000000000000000000") and (EX_MEM_RegRd = ID_EX_RegRt)) and (MEM_WB_RegRd = ID_EX_RegRt) else
+	Foward_B <= "10" when (IDEX_out.inst(31 downto 26) /="000000" and EXMEM_out.control.reg_write = '1') and ((EXMEM_out.Rd = IDEX_out.Rt and EXMEM_out.inst(31 downto 26) = "000000") or (EXMEM_out.Rt = IDEX_out.Rt and EXMEM_out.inst(31 downto 26) /= "000000")) else 
+				"01" when (IDEX_out.inst(31 downto 26) /="000000" and  MEMWB_out.control.reg_write = '1') and (EXMEM_out.control.reg_write /= '1') and ((MEMWB_out.Rd = IDEX_out.Rt and MEMWB_out.inst(31 downto 26) = "000000") or (MEMWB_out.Rt = IDEX_out.Rt and MEMWB_out.inst(31 downto 26) /= "000000")) else
 				"00";
 	
+
 end structure;

@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use work.mips32.all;
 use work.cpurecordsv4.all;
+use work.utils.all;
 
 entity cpuv4 is
 	-- Use N to change the global bit width of the CPU, A should change with it such that 2^A = N
@@ -99,6 +100,15 @@ architecture structure of cpuv4 is
 			 o_D : out m32_vector(N - 1 downto 0));
 	end component;
 
+	component mux_Nbit_Min
+		generic(N : integer := DATAWIDTH;
+			    M : integer;
+			    A : integer);
+		port(c_S : in  std_logic_vector;
+			 i_A : in  array_Nbit;
+			 o_D : out std_logic_vector);
+	end component;
+
 	component extender_Nbit_Mbit is
 		generic(N : integer := 8;
 			    M : integer := DATAWIDTH);
@@ -174,6 +184,14 @@ architecture structure of cpuv4 is
 			 MEMWB_RST : out m32_1bit);
 	end component;
 
+	component fowarding is
+		port(MEMWB_out : in  m32_MEMWB;
+			 EXMEM_out : in  m32_EXMEM;
+			 IDEX_out  : in  m32_IDEX;
+			 Foward_A  : out m32_2bits;
+			 Foward_B  : out m32_2bits);
+	end component;
+
 	-- Pipeline Register Signals
 	signal IFID_in, IFID_out                                                              : m32_IFID;
 	signal IDEX_in, IDEX_out                                                              : m32_IDEX;
@@ -196,6 +214,11 @@ architecture structure of cpuv4 is
 
 	--Clock
 	signal CLK, NOTCLK : m32_logic;
+
+	--Forwarding Signals
+	signal s_forwardAin, s_ForwardBin : array_Nbit(3 downto 0, DATAWIDTH - 1 downto 0);
+	signal s_forwardA, s_forwardB     : m32_2bits;
+	signal s_aluin1, s_aluin2         : m32_vector(DATAWIDTH - 1 downto 0);
 
 begin
 	NOTCLK <= CLK;
@@ -230,7 +253,7 @@ begin
 			     WE    => MEMWB_WE,     -- Write enable
 			     reset => MEMWB_RST,    -- The reset/flush signal
 			     clock => CLK);
-			     
+
 	HAZARD : hazarddetect
 		port map(IDEX_out  => IDEX_out,
 			     IFID_out  => IFID_out,
@@ -294,6 +317,7 @@ begin
 			     i_A => branchorplus4,
 			     i_B => jumpaddress,
 			     o_D => jumporbranch);
+			     
 
 	--Switch to return address
 	JRSWITCHER : mux_Nbit_2in
@@ -418,6 +442,39 @@ begin
 			     o_D => branchaddress,
 			     o_C => open);
 
+	-- Data Forwarding --
+
+	FORWARD : fowarding
+		port map(
+			MEMWB_out => MEMWB_out,
+			IDEX_out  => IDEX_out,
+			EXMEM_out => EXMEM_out,
+			Foward_A  => s_forwardA,
+			Foward_B  => s_forwardB);
+
+	connections : for I in 0 to DATAWIDTH - 1 generate
+		s_ForwardAin(0, I) <= IDEX_out.rdata1(I);
+		s_ForwardAin(1, I) <= writeback(I);
+		s_ForwardAin(2, I) <= EXMEM_out.aluresult(I);
+		s_ForwardBin(0, I) <= IDEX_out.rdata2(I);
+		s_ForwardBin(1, I) <= writeback(I);
+		s_ForwardBin(2, I) <= EXMEM_out.aluresult(I);
+	end generate connections;
+
+	FORWARD1 : mux_Nbit_Min
+		generic map(N => DATAWIDTH, M => 4, A => 2)
+		port map(i_A => s_ForwardAin,
+			     c_S => s_ForwardA,
+			     o_D => s_aluin1);
+
+	FORWARD2 : mux_Nbit_Min
+		generic map(N => DATAWIDTH, M => 4, A => 2)
+		port map(i_A => s_ForwardBin,
+			     c_S => s_ForwardB,
+			     o_D => s_aluin2);
+
+	EXMEM_in.rdata2 <= s_aluin2;
+
 	-----------------------------------------------------------
 	-----------------------------------------------------------
 	--EX Stage
@@ -429,7 +486,7 @@ begin
 	EXMEM_in.inst_string <= IDEX_out.inst_string;
 	EXMEM_in.inst        <= IDEX_out.inst;
 	EXMEM_in.control     <= IDEX_out.control;
-	EXMEM_in.rdata2      <= IDEX_out.rdata2;
+	--EXMEM_in.rdata2      <= IDEX_out.rdata2;
 	EXMEM_in.rd          <= IDEX_out.rd;
 	EXMEM_in.rs          <= IDEX_out.rs;
 	EXMEM_in.rt          <= IDEX_out.rt;
@@ -466,7 +523,7 @@ begin
 	ALUSWITCHER1 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
 		port map(c_S => IDEX_out.alucontrol.shift,
-			     i_A => IDEX_out.rdata1,
+			     i_A => s_aluin1,
 			     i_B => shamt,
 			     o_D => alumux1);
 
@@ -474,7 +531,7 @@ begin
 	ALUSWITCHER2 : mux_Nbit_2in
 		generic map(N => DATAWIDTH)
 		port map(c_S => IDEX_out.control.alu_src,
-			     i_A => IDEX_out.rdata2,
+			     i_A => s_aluin2,
 			     i_B => loadimmediate,
 			     o_D => alumux2);
 

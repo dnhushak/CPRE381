@@ -13,6 +13,7 @@ proc cpucompile {} {	r
                            		Project-C/SCPv4/components/alucontrolv4.vhd
 								Project-C/SCPv4/components/controlv4.vhd
 								Project-C/SCPv4/components/hazarddetect.vhd
+								Project-C/SCPv4/components/forwarding.vhd
 								Project-C/SCPv4/components/ifid_reg.vhd
 								Project-C/SCPv4/components/idex_reg.vhd
 								Project-C/SCPv4/components/exmem_reg.vhd
