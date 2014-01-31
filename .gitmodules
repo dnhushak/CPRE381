@@ -1,0 +1,3 @@
+[submodule "VHDL-Components"]
+	path = VHDL-Components
+	url = git@github.com:dnhushak/VHDL-Components.git
